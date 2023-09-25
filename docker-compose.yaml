@@ -6,6 +6,7 @@ services:
 
     environment:
       MARIADB_ROOT_PASSWORD: password
+      MARIADB_DATABASE: budget_flow_api
 
   nginx:
     image: nginx:latest
