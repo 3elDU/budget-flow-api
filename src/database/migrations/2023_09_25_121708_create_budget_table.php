@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->tinyText('name');
             $table->string('description')->nullable();
-            $table->foreignId('currency_id')->references('id')->on('currencies');
+            $table->char('currency_iso', 3); // Currency code in ISO format, e.g. USD, EUR, UAH
             $table->tinyText('color_hex');
             $table->nullableTimestamps();
 

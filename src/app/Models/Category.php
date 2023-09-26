@@ -12,10 +12,17 @@ class Category extends Model
 
     protected $guarded = ['id'];
 
+    /**
+     * Returns all the incomes associated with this category
+     */
     public function incomes(): BelongsToMany
     {
-        return $this->belongsTOMany(Income::class);
+        return $this->belongsToMany(Income::class);
     }
+
+    /**
+     * Returns all the expenses associated with this category
+     */
     public function expenses(): BelongsToMany
     {
         return $this->belongsToMany(Expense::class);

@@ -12,6 +12,9 @@ class User extends Model
 
     protected $guarded = ['id'];
 
+    /**
+     * Returns all the budgets associated with this user
+     */
     public function budgets(): BelongsToMany
     {
         return $this->belongsToMany(Budget::class);
