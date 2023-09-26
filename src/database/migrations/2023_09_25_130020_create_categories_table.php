@@ -10,7 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('income_categories', function (Blueprint $table) {
+        // Categories which can be assigned to income/expense
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->tinyText('name');
             $table->string('description')->nullable();
@@ -24,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('income_categories');
+        Schema::dropIfExists('categories');
     }
 };

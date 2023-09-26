@@ -10,12 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('expense_categories', function (Blueprint $table) {
-            $table->id();
-            $table->tinyText('name');
-            $table->string('description')->nullable();
-            $table->tinyText('color_hex');
-            $table->timestamps();
+        // Many-to-many relationship between expenses and categories
+        Schema::create('expense_category', function (Blueprint $table) {
+            $table->foreignId('expense_id')->references('id')->on('expenses');
+            $table->foreignId('category_id')->references('id')->on('expense_categories');
         });
     }
 
@@ -24,6 +22,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('expense_categories');
+        Schema::dropIfExists('expense_category');
     }
 };
