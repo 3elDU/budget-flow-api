@@ -13,7 +13,7 @@ return new class extends Migration {
         // Many-to-many relationship between incomes and categories
         Schema::create('income_category', function (Blueprint $table) {
             $table->foreignId('income_id')->references('id')->on('incomes');
-            $table->foreignId('category_id')->references('id')->on('income_categories');
+            $table->foreignId('category_id')->references('id')->on('categories');
         });
     }
 
