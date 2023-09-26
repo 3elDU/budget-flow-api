@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         // Many to many relationship between users and budgets
-        Schema::create('budget_users', function (Blueprint $table) {
+        Schema::create('budget_user', function (Blueprint $table) {
             $table->foreignId('user_id')->references('id')->on('users');
             $table->foreignId('budget_id')->references('id')->on('budgets');
         });

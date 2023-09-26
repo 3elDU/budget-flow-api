@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->foreignId('currency_id')->references('id')->on('currencies');
             $table->tinyText('color_hex');
             $table->nullableTimestamps();
-            $table->foreignId('budget_user')->references('id')->on('users');
+
         });
     }
 
