@@ -40,13 +40,13 @@ class Budget extends Model
     }
 
     /**
-     * Converts the model to Brick\Money\Currency object
+     * Converts the model to/from Brick\Money\Currency object
      */
     protected function currency(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value, array $attributes) => Currency::of($attributes["name"]),
-            set: fn(Currency $value) => $value->getCurrencyCode(),
+            get: fn (string $value, array $attributes) => Currency::of($attributes["name"]),
+            set: fn (Currency $value) => $value->getCurrencyCode(),
         );
     }
 }
