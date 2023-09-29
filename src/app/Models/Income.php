@@ -28,4 +28,12 @@ class Income extends Model
     {
         return $this->belongsTo(Budget::class);
     }
+
+    /**
+     * Returns the user associated with this income
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

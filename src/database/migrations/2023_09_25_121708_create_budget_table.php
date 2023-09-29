@@ -17,7 +17,6 @@ return new class extends Migration {
             $table->char('currency_iso', 3); // Currency code in ISO format, e.g. USD, EUR, UAH
             $table->tinyText('color_hex');
             $table->nullableTimestamps();
-
         });
     }
 

@@ -28,4 +28,12 @@ class Expense extends Model
     {
         return $this->belongsTo(Expense::class);
     }
+
+    /**
+     * Returns the user associated with this expense
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
