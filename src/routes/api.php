@@ -1,23 +1,21 @@
 <?php
 
+use App\Http\Controllers\AddUserController;
+use App\Http\Controllers\GetUsersController;
 use App\Http\Controllers\HelloWorldController;
-use App\Http\Controllers\PusskaController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group([
+    'prefix' => 'auth',
+    'middleware' => 'auth:sanctum'
+], function ($router) {
+    Route::post('/login', [AuthController::class, 'login'])
+        ->withoutMiddleware('auth:sanctum');
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
 
-Route::get("/helloworld", [HelloWorldController::class, "run"]);
+Route::middleware('auth:sanctum')->group(function ($router) {
+    Route::get('/me', [AuthController::class, 'me']);
+});
