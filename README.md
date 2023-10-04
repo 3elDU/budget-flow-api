@@ -1,13 +1,13 @@
 # budget-flow-api
 
 ## Running
-First, copy `.env.example` file, generate application and JWT key and tune other settings to your likings:
+Copy `.env.example` file and generate application key:
 ```sh
 cp .env.example .env
 php artisan key:generate
 ```
 Run everything with `docker compose up -d`  
-(`-d` is optional, but it runs everything in background)
+(`-d` is optional, but it starts containers in the background)
 
 ## Project structure
 
