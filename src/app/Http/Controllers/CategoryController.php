@@ -32,7 +32,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Return all incomes having this category
+     * Return all incomes having this category, paginated, 100 per page.
      */
     public function incomes(Category $category)
     {
@@ -42,7 +42,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Return all expenses having this category
+     * Return all expenses having this category, paginated, 100 per page.
      */
     public function expenses(Category $category)
     {

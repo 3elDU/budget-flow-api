@@ -6,6 +6,7 @@ use App\Http\Controllers\HelloWorldController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\IncomeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,15 +37,24 @@ Route::controller(CategoryController::class)
 Route::controller(BudgetController::class)
     ->middleware('auth:sanctum')
     ->prefix('budgets')
-    ->group(
-        function () {
-            Route::get('/', 'budgets');
-            Route::get('/{budget}', 'budget');
-            Route::put('/{budget}', 'update');
-            Route::delete('/{budget}', 'delete');
-            Route::post('/', 'create');
-        }
-    );
+    ->group(function () {
+        Route::get('/', 'budgets');
+        Route::get('/{budget}', 'budget');
+        Route::put('/{budget}', 'update');
+        Route::delete('/{budget}', 'delete');
+        Route::post('/', 'create');
+
+
+        // Income routes
+        Route::controller(IncomeController::class)->group(function () {
+            Route::get('/{budget}/incomes', 'incomes');
+            Route::get('/{budget}/incomes/{income}', 'income');
+            Route::post('/{budget}/incomes', 'create');
+            Route::put('/{budget}/incomes/{income}', 'update');
+            Route::delete('/{budget}/incomes/{income}', 'delete');
+        });
+    });
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
