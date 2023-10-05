@@ -16,10 +16,8 @@ class BudgetController extends Controller
      */
     public function budgets()
     {
-        /** @var \App\Models\User */
-        $user = auth()->user();
         return response()->json(
-            $user->budgets()->get()
+            auth()->user()->budgets()->get()
         );
     }
 
@@ -37,16 +35,11 @@ class BudgetController extends Controller
      */
     public function update(Budget $budget, BudgetUpdateRequest $request)
     {
-        $request = $request->validated();
+        $data = $request->validated();
 
-        if (array_key_exists('name', $request)) {
-            $budget->name = $request['name'];
-        }
-        if (array_key_exists('description', $request)) {
-            $budget->description = $request['description'];
-        }
-
+        $budget->update($data);
         $budget->save();
+
         return response()->json($budget);
     }
 
@@ -57,6 +50,7 @@ class BudgetController extends Controller
     public function delete(Budget $budget)
     {
         $budget->delete();
+
         return response()->json($budget);
     }
 
@@ -66,9 +60,11 @@ class BudgetController extends Controller
      */
     public function create(BudgetCreateRequest $request)
     {
-        $request = $request->validated();
-        $budget = Budget::create($request);
+        $data = $request->validated();
+
+        $budget = Budget::create($data);
         $budget->users()->attach(auth()->user());
+
         return response()->json($budget);
     }
 }

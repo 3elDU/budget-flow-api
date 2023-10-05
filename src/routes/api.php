@@ -46,6 +46,6 @@ Route::controller(BudgetController::class)
         }
     );
 
-Route::middleware('auth:sanctum')->group(function ($router) {
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 });

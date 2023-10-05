@@ -16,8 +16,8 @@ class BudgetCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string', 'required', 'min:3', 'max:255'],
-            'description' => ['string', 'min:3', 'max:4095'],
+            'name' => ['string', 'required', 'min:1', 'max:255'],
+            'description' => ['string', 'min:1', 'max:4096'],
             'color_hex' => ['string', 'required', new HexColor],
             'currency_iso' => ['string', 'required', new CurrencyCode]
         ];

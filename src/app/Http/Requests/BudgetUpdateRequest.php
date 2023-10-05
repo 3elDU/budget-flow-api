@@ -14,8 +14,8 @@ class BudgetUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string', 'min:3', 'max:255'],
-            'description' => ['string', 'min:3', 'max:4095']
+            'name' => ['string', 'min:1', 'max:255'],
+            'description' => ['string', 'nullable', 'min:1', 'max:4095']
         ];
     }
 }
