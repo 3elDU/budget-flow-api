@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('description', 4096)->nullable();
             $table->tinyText('color_hex');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

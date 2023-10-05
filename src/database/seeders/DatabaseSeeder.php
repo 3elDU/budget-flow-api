@@ -31,7 +31,10 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Loan'],
         )->create();
 
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'email' => 'user@example.com',
+            'password' => 'password'
+        ]);
         $budget = Budget::factory()->hasAttached($user)->create();
 
         Income::factory(10)

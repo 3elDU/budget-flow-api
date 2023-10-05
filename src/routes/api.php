@@ -5,6 +5,7 @@ use App\Http\Controllers\GetUsersController;
 use App\Http\Controllers\HelloWorldController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,17 +19,32 @@ Route::group([
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
+// Category routes
+Route::controller(CategoryController::class)
+    ->middleware('auth:sanctum')
+    ->prefix('categories')
+    ->group(function () {
+        Route::get('/', 'categories');
+        Route::post('/', 'create');
+        Route::get('/{category}/incomes', 'incomes');
+        Route::get('/{category}/expenses', 'expenses');
+        Route::put('/{category}', 'update');
+        Route::delete('/{category}', 'delete');
+    });
+
 // Budget routes
-Route::group([
-    'prefix' => 'budgets',
-    'middleware' => 'auth:sanctum'
-], function ($router) {
-    Route::get('/', [BudgetController::class, 'budgets']);
-    Route::get('/{budget}', [BudgetController::class, 'budget']);
-    Route::put('/{budget}', [BudgetController::class, 'update']);
-    Route::delete('/{budget}', [BudgetController::class, 'delete']);
-    Route::post('/', [BudgetController::class, 'create']);
-});
+Route::controller(BudgetController::class)
+    ->middleware('auth:sanctum')
+    ->prefix('budgets')
+    ->group(
+        function () {
+            Route::get('/', 'budgets');
+            Route::get('/{budget}', 'budget');
+            Route::put('/{budget}', 'update');
+            Route::delete('/{budget}', 'delete');
+            Route::post('/', 'create');
+        }
+    );
 
 Route::middleware('auth:sanctum')->group(function ($router) {
     Route::get('/me', [AuthController::class, 'me']);
