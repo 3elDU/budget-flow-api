@@ -25,19 +25,11 @@ class Budget extends Model
     }
 
     /**
-     * Returns all the incomes beloging to this budget
+     * Returns all the operations beloging to this budget
      */
-    public function incomes(): HasMany
+    public function operations(): HasMany
     {
-        return $this->hasMany(Income::class);
-    }
-
-    /**
-     * Returns all the expenses belonging to this budget
-     */
-    public function expenses(): HasMany
-    {
-        return $this->hasMany(Expense::class);
+        return $this->hasMany(Operation::class);
     }
 
     /**

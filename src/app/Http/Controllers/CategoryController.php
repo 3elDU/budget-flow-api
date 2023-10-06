@@ -32,22 +32,12 @@ class CategoryController extends Controller
     }
 
     /**
-     * Return all incomes having this category, paginated, 100 per page.
+     * Return all operations having this category, paginated, 100 per page.
      */
-    public function incomes(Category $category)
+    public function operations(Category $category)
     {
         return response()->json(
-            $category->incomes()->paginate(100)
-        );
-    }
-
-    /**
-     * Return all expenses having this category, paginated, 100 per page.
-     */
-    public function expenses(Category $category)
-    {
-        return response()->json(
-            $category->expenses()->paginate(100)
+            $category->operations()->paginate(100)
         );
     }
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Income extends Model
+class Operation extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -16,7 +16,7 @@ class Income extends Model
     protected $guarded = ['id'];
 
     /**
-     * Returns all categories attached to this income
+     * Returns all categories attached to this operation
      */
     public function categories(): BelongsToMany
     {
@@ -24,7 +24,7 @@ class Income extends Model
     }
 
     /**
-     * Returns the budget associated with this income
+     * Returns the budget associated with this operation
      */
     public function budget(): BelongsTo
     {
@@ -32,7 +32,7 @@ class Income extends Model
     }
 
     /**
-     * Returns the user associated with this income
+     * Returns the user associated with this operation
      */
     public function user(): BelongsTo
     {

@@ -1,14 +1,9 @@
 <?php
 
-use App\Http\Controllers\AddUserController;
-use App\Http\Controllers\GetUsersController;
-use App\Http\Controllers\HelloWorldController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ExpenseController;
-use App\Http\Controllers\IncomeController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\OperationController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication routes
@@ -28,8 +23,7 @@ Route::controller(CategoryController::class)
     ->group(function () {
         Route::get('/', 'categories');
         Route::post('/', 'create');
-        Route::get('/{category}/incomes', 'incomes');
-        Route::get('/{category}/expenses', 'expenses');
+        Route::get('/{category}/operations', 'operations');
         Route::put('/{category}', 'update');
         Route::delete('/{category}', 'delete');
     });
@@ -45,22 +39,13 @@ Route::controller(BudgetController::class)
         Route::delete('/{budget}', 'delete');
         Route::post('/', 'create');
 
-        // Income routes
-        Route::controller(IncomeController::class)->group(function () {
-            Route::get('/{budget}/incomes', 'incomes');
-            Route::get('/{budget}/incomes/{income}', 'income');
-            Route::post('/{budget}/incomes', 'create');
-            Route::put('/{budget}/incomes/{income}', 'update');
-            Route::delete('/{budget}/incomes/{income}', 'delete');
-        });
-
-        // Expense routes
-        Route::controller(ExpenseController::class)->group(function () {
-            Route::get('/{budget}/expenses', 'expenses');
-            Route::get('/{budget}/expenses/{expense}', 'expense');
-            Route::post('/{budget}/expenses', 'create');
-            Route::put('/{budget}/expenses/{expense}', 'update');
-            Route::delete('/{budget}/expenses/{expense}', 'delete');
+        // Operation routes
+        Route::controller(OperationController::class)->group(function () {
+            Route::get('/{budget}/operations', 'operations');
+            Route::get('/{budget}/operations/{operation}', 'operation');
+            Route::post('/{budget}/operations', 'create');
+            Route::put('/{budget}/operations/{operation}', 'update');
+            Route::delete('/{budget}/operations/{operation}', 'delete');
         });
     });
 

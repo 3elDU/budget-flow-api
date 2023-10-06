@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -22,6 +23,14 @@ class User extends AuthUser
     public function budgets(): BelongsToMany
     {
         return $this->belongsToMany(Budget::class);
+    }
+
+    /**
+     * Returns all the operations created by this user
+     */
+    public function operations(): HasMany
+    {
+        return $this->hasMany(Operation::class);
     }
 
     protected function password(): Attribute

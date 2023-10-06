@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\MoneyAmount;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ExpenseUpdateRequest extends FormRequest
+class OperationUpdateRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -16,7 +17,7 @@ class ExpenseUpdateRequest extends FormRequest
         return [
             'name' => ['string', 'min:1', 'max:255'],
             'description' => ['string', 'nullable', 'min:1', 'max:4096'],
-            'amount' => ['decimal:0,2', 'min:0.01']
+            'amount' => [new MoneyAmount]
         ];
     }
 }

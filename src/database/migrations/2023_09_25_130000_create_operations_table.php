@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('incomes', function (Blueprint $table) {
+        Schema::create('operations', function (Blueprint $table) {
             $table->id();
-            $table->float('amount');
+            $table->float('amount', 14, 2);
             $table->foreignId('budget_id')->references('id')->on('budgets');
             $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('incomes');
+        Schema::dropIfExists('operations');
     }
 };

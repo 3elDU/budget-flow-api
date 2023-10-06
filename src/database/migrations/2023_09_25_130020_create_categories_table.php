@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Categories which can be assigned to income/expense
+        // Categories which can be assigned to operations
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->tinyText('name');

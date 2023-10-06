@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Many-to-many relationship between incomes and categories
-        Schema::create('category_income', function (Blueprint $table) {
-            $table->foreignId('income_id')->references('id')->on('incomes');
+        // Many-to-many relationship between operations and categories
+        Schema::create('category_operation', function (Blueprint $table) {
+            $table->foreignId('operation_id')->references('id')->on('operations');
             $table->foreignId('category_id')->references('id')->on('categories');
         });
     }
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('category_income');
+        Schema::dropIfExists('category_operation');
     }
 };
