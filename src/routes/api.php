@@ -28,25 +28,36 @@ Route::controller(CategoryController::class)
         Route::delete('/{category}', 'delete');
     });
 
+Route::middleware('auth:sanctum')
+    ->group(function () {
+        // Budget routes
+        Route::controller(BudgetController::class)
+            ->prefix('budgets')
+            ->group(function () {
+                Route::get('/', 'budgets');
+                Route::get('/{budget}', 'budget');
+                Route::put('/{budget}', 'update');
+                Route::delete('/{budget}', 'delete');
+                Route::post('/', 'create');
+            });
+
+        // Operation routes
+        Route::controller(OperationController::class)
+            ->prefix('operations')
+            ->group(function () {
+                Route::get('/', 'index');
+                Route::get('{operation}', 'get');
+                Route::post('{budget}', 'create');
+                Route::put('{operation}', 'update');
+                Route::delete('{operation}', 'delete');
+            });
+    });
+
 // Budget routes
 Route::controller(BudgetController::class)
     ->middleware('auth:sanctum')
     ->prefix('budgets')
     ->group(function () {
-        Route::get('/', 'budgets');
-        Route::get('/{budget}', 'budget');
-        Route::put('/{budget}', 'update');
-        Route::delete('/{budget}', 'delete');
-        Route::post('/', 'create');
-
-        // Operation routes
-        Route::controller(OperationController::class)->group(function () {
-            Route::get('/{budget}/operations', 'operations');
-            Route::get('/{budget}/operations/{operation}', 'operation');
-            Route::post('/{budget}/operations', 'create');
-            Route::put('/{budget}/operations/{operation}', 'update');
-            Route::delete('/{budget}/operations/{operation}', 'delete');
-        });
     });
 
 

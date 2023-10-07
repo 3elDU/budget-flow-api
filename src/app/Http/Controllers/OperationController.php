@@ -10,19 +10,19 @@ use App\Models\Operation;
 class OperationController extends Controller
 {
     /**
-     * Return all operations for this budget, paginated, 100 per page.
+     * Return all operations, paginated, 100 per page.
      */
-    public function operations(Budget $budget)
+    public function index()
     {
         return response()->json(
-            $budget->operations()->paginate(100)
+            Operation::paginate(100)
         );
     }
 
     /**
      * Return a specific operation by id
      */
-    public function operation(Budget $budget, Operation $operation)
+    public function get(Budget $budget, Operation $operation)
     {
         return response()->json($operation);
     }
