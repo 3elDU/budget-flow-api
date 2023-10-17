@@ -4,7 +4,7 @@ namespace App\Structures\DTO;
 
 use Illuminate\Support\Collection;
 
-class FilterDTO
+class FiltersDTO
 {
     /**
      * @param Collection<FilterWhereDTO> $filters

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Budget;
+use App\Services\BudgetService;
+use Illuminate\Routing\Controller;
+use App\Structures\Enum\AnalyticsPeriod;
 use App\Http\Requests\BudgetCreateRequest;
 use App\Http\Requests\BudgetUpdateRequest;
-use App\Models\Budget;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Database\Eloquent\RelationNotFoundException;
-use Illuminate\Http\Request;
+use App\Http\Requests\BudgetAnalyticsRequest;
 
 class BudgetController extends Controller
 {
@@ -30,6 +32,33 @@ class BudgetController extends Controller
     }
 
     /**
+     * Get analytics for a budget
+     */
+    public function analytics(Budget $budget, BudgetAnalyticsRequest $request)
+    {
+        $data = $request->validated();
+
+        $periods = BudgetService::calculatePeriods(
+            isset($data['start_time'])
+                ? Carbon::parse($data['start_time'])
+                : BudgetService::getStartDate($budget),
+            isset($data['end_time'])
+                ? Carbon::parse($data['end_time'])
+                : Carbon::now(),
+            isset($data['period'])
+                ? AnalyticsPeriod::fromString($data['period'])
+                : AnalyticsPeriod::All
+        );
+
+        $response = [];
+        foreach ($periods as $period) {
+            $response[] = BudgetService::analyticsForPeriod($budget, $period);
+        }
+
+        return $response;
+    }
+
+    /**
      * Update a budget.
      * Returns updated budget object
      */
@@ -45,13 +74,12 @@ class BudgetController extends Controller
 
     /**
      * Soft-delete a specific budget.
-     * Returns deleted budget object
      */
     public function delete(Budget $budget)
     {
         $budget->delete();
 
-        return response()->json($budget);
+        return response()->noContent();
     }
 
     /**

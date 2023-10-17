@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\FiltersRequest;
-use App\Http\Requests\OperationCreateRequest;
-use App\Http\Requests\OperationUpdateRequest;
 use App\Models\Budget;
 use App\Models\Operation;
+use Illuminate\Routing\Controller;
 use App\Services\FiltrationService;
-use Illuminate\Auth\Access\AuthorizationException;
+use App\Http\Requests\FiltersRequest;
+use App\Http\Resources\OperationResource;
+use App\Http\Requests\OperationCreateRequest;
+use App\Http\Requests\OperationUpdateRequest;
 
 class OperationController extends Controller
 {
@@ -24,25 +25,24 @@ class OperationController extends Controller
         $filters = $request->validated();
         $filtersDTO = FiltrationService::makeDTO($filters);
 
-        // Verify that user is authorized to make a request
-        $lacksPermission = $filtersDTO
-            ->filters
-            ->filter(
-                fn ($filter) =>
-                // Check if the user is querying budget(s), and if the user isn't member of the budget
-                $filter->field === "budget_id" && !$user->budgets()->has($filter->value)
-            )
-            ->count() > 0;
+        // If the user is querying 'budget_id', check if they have permission for the budget(s)
+        foreach ($filtersDTO->filters as $filter) {
+            if ($filter->field !== 'budget_id') {
+                continue;
+            }
 
-        if ($lacksPermission) {
-            return response('not authorized', 403);
+            /** @var \App\Models\Budget $budget */
+            $budget = Budget::query()->find($filter->value)->first();
+
+            if (!$budget->users->contains($user)) {
+                // If a user is not a member of this budget, return 403 unauthorized
+                return response('not authorized', 403);
+            }
         }
 
         FiltrationService::performFiltration($query, $filtersDTO);
 
-        return response()->json(
-            $query->paginate(100)
-        );
+        return OperationResource::collection($query->paginate(100));
     }
 
     /**
@@ -84,12 +84,11 @@ class OperationController extends Controller
 
     /**
      * Delete a specified operation.
-     * Returns deleted operation object.
      */
     public function delete(Budget $budget, Operation $operation)
     {
         $operation->delete();
 
-        return response()->json($operation);
+        return response()->noContent();
     }
 }
