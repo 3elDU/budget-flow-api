@@ -44,7 +44,7 @@ class BudgetController extends Controller
                 : BudgetService::getStartDate($budget),
             isset($data['end_time'])
                 ? Carbon::parse($data['end_time'])
-                : Carbon::now(),
+                : null,
             isset($data['period'])
                 ? AnalyticsPeriod::fromString($data['period'])
                 : AnalyticsPeriod::All

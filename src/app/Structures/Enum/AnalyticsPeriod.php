@@ -26,7 +26,7 @@ enum AnalyticsPeriod: string
         throw new Exception('unknown period');
     }
 
-    public function toCarbonPeriod(Carbon $start, Carbon $end): CarbonPeriod
+    public function toCarbonPeriod(Carbon $start, Carbon|null $end): CarbonPeriod
     {
         return match ($this) {
             $this::Day => CarbonPeriod::create($start, '1 day', $end),

@@ -2,20 +2,19 @@
 
 namespace App\Structures\DTO;
 
-use App\Structures\Enum\AnalyticsPeriod;
 use Carbon\Carbon;
-use DateTime;
+use App\Structures\Enum\AnalyticsPeriod;
 
 class AnalyticsPeriodDTO
 {
     /**
      * @param Carbon $start
-     * @param Carbon $end
+     * @param Carbon|null $end
      * @param AnalyticsPeriod $period
      */
     public function __construct(
         public Carbon $start,
-        public Carbon $end,
+        public Carbon|null $end,
         public AnalyticsPeriod $period,
     ) {
     }

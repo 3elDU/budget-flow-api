@@ -7,6 +7,7 @@ use App\Models\Operation;
 use Illuminate\Routing\Controller;
 use App\Services\FiltrationService;
 use App\Http\Requests\FiltersRequest;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\OperationResource;
 use App\Http\Requests\OperationCreateRequest;
 use App\Http\Requests\OperationUpdateRequest;
@@ -67,6 +68,12 @@ class OperationController extends Controller
             ...$data,
         ]);
 
+        // Invalidate cache for this budget
+        Cache::tags(["budget:{$budget->id}", 'amount_at'])->forget('now');
+        Cache::tags("end_time:null")->flush();
+
+        dd(Cache::tags(["budget:{$budget->id}", 'amount_at'])->get('now'));
+
         return response()->json($operation);
     }
 
@@ -79,6 +86,9 @@ class OperationController extends Controller
 
         $operation->update($data);
 
+        // Invalidate cache for this budget
+        Cache::tags("budget:{$budget->id}")->flush();
+
         return response()->json($operation);
     }
 
@@ -88,6 +98,9 @@ class OperationController extends Controller
     public function delete(Budget $budget, Operation $operation)
     {
         $operation->delete();
+
+        // Invalidate cache for this budget
+        Cache::tags("budget:{$budget->id}")->flush();
 
         return response()->noContent();
     }
