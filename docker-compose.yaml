@@ -21,6 +21,7 @@ services:
       - "80:80"
     volumes:
       - ./docker/nginx.conf:/etc/nginx/nginx.conf
+      - ./src/public:/src/public
 
   app:
     build:
