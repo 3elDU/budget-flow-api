@@ -19,7 +19,7 @@ class BudgetController extends Controller
     public function budgets()
     {
         return response()->json(
-            auth()->user()->budgets()->get()
+            auth()->user()->budgets
         );
     }
 

@@ -49,7 +49,7 @@ class OperationController extends Controller
     /**
      * Return a specific operation by id
      */
-    public function get(Budget $budget, Operation $operation)
+    public function get(Operation $operation)
     {
         return response()->json($operation);
     }
@@ -68,26 +68,20 @@ class OperationController extends Controller
             ...$data,
         ]);
 
-        // Invalidate cache for this budget
-        Cache::tags(["budget:{$budget->id}", 'amount_at'])->forget('now');
-        Cache::tags("end_time:null")->flush();
-
-        dd(Cache::tags(["budget:{$budget->id}", 'amount_at'])->get('now'));
-
         return response()->json($operation);
     }
 
     /**
      * Update a specific operation
      */
-    public function update(Budget $budget, Operation $operation, OperationUpdateRequest $request)
+    public function update(Operation $operation, OperationUpdateRequest $request)
     {
         $data = $request->validated();
 
         $operation->update($data);
 
         // Invalidate cache for this budget
-        Cache::tags("budget:{$budget->id}")->flush();
+        Cache::tags("budget:{$operation->budget->id}")->flush();
 
         return response()->json($operation);
     }
@@ -95,12 +89,12 @@ class OperationController extends Controller
     /**
      * Delete a specified operation.
      */
-    public function delete(Budget $budget, Operation $operation)
+    public function delete(Operation $operation)
     {
         $operation->delete();
 
         // Invalidate cache for this budget
-        Cache::tags("budget:{$budget->id}")->flush();
+        Cache::tags("budget:{$operation->budget->id}")->flush();
 
         return response()->noContent();
     }
