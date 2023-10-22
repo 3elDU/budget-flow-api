@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,6 +11,16 @@ use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property int id
+ * @property string name
+ * @property string email
+ * @property string password
+ * @property string created_at
+ * @property string updated_at
+ * @property Collection<Budget> budgets
+ * @property Collection<Operation> operations
+ */
 class User extends AuthUser
 {
     use HasApiTokens, HasFactory, Notifiable;

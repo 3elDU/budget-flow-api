@@ -3,12 +3,26 @@
 namespace App\Models;
 
 use Brick\Money\Currency;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * @property int id
+ * @property string name
+ * @property string description
+ * @property string currency_iso
+ * @property string color_hex
+ * @property string created_at
+ * @property string updated_at
+ * @property string deleted_at
+ * @property Collection<User> users
+ * @property Collection<Operation> operations
+ * @property Collection<Currency> currency
+ */
 class Budget extends Model
 {
     use HasFactory, SoftDeletes;
@@ -24,7 +38,7 @@ class Budget extends Model
     }
 
     /**
-     * Returns all the operations beloging to this budget
+     * Returns all the operations belonging to this budget
      */
     public function operations(): BelongsToMany
     {

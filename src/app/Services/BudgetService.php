@@ -5,6 +5,8 @@ namespace App\Services;
 use Carbon\Carbon;
 use App\Models\Budget;
 use App\Models\Operation;
+use DateTime;
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use App\Structures\DTO\AnalyticsDataDTO;
@@ -16,8 +18,12 @@ class BudgetService
 {
     /**
      * From the given request, return a collection of periods for calculating analytics
-     * @param array $request
+     *
+     * @param Carbon $start
+     * @param Carbon|null $end
+     * @param AnalyticsPeriod $period
      * @return Collection<AnalyticsPeriodDTO>
+     * @throws Exception
      */
     public static function calculatePeriods(Carbon $start, Carbon|null $end, AnalyticsPeriod $period): Collection
     {
@@ -32,9 +38,8 @@ class BudgetService
         /** @var AnalyticsPeriodDTO[] $periods */
         $periods = [];
         $carbonPeriod = $period->toCarbonPeriod($start, $end ?? now());
-
-        /** @var Carbon $previousDate */
         $previousDate = $start;
+
         // Fill the periods array
         foreach ($carbonPeriod as $date) {
             if ($date == $previousDate) {
@@ -68,12 +73,13 @@ class BudgetService
 
     /**
      * Returns analytics object for the specified period
+     *
      * @param Budget $budget
      * @param AnalyticsPeriodDTO $period
      * @return array
      * @throws RelationNotFoundException
      */
-    public static function analyticsForPeriod(Budget $budget, AnalyticsPeriodDTO $period)
+    public static function analyticsForPeriod(Budget $budget, AnalyticsPeriodDTO $period): array
     {
         $operations = BudgetService::operations($budget, $period);
         if ($operations->amounts->count() == 0) {
@@ -116,6 +122,7 @@ class BudgetService
             ->count();
 
         $avgIncomePerPeriod = 0.0;
+
         if ($incomeCount != 0) {
             $avgIncomePerPeriod = $incomePerPeriod / $incomeCount;
         }
@@ -133,11 +140,12 @@ class BudgetService
     /**
      * Make a DTO with the total sum of all operations in the time range,
      * along with array of amounts for each operation
-     * @param DateTime $start
-     * @param DateTime $end
+     *
+     * @param Budget $budget
+     * @param AnalyticsPeriodDTO $period
      * @return AnalyticsDataDTO
      */
-    public static function operations(Budget $budget, AnalyticsPeriodDTO $period)
+    public static function operations(Budget $budget, AnalyticsPeriodDTO $period): AnalyticsDataDTO
     {
         $getOperationsFn = function () use ($budget, $period) {
             $operations = Operation::query()
@@ -160,7 +168,12 @@ class BudgetService
             $amounts = json_decode($getOperationsFn());
         } else {
             $amounts = json_decode(
-                Cache::tags(["budget:{$budget->id}", 'operations', "start_time:{$period->start}", "end_time:{$period->end}"])
+                Cache::tags([
+                    "budget:$budget->id",
+                    'operations',
+                    "start_time:$period->start",
+                    "end_time:$period->end",
+                ])
                     ->rememberForever(
                         "{$period->start}, {$period->end}",
                         $getOperationsFn
@@ -177,10 +190,10 @@ class BudgetService
     /**
      * Returns how much money there is on a budget, on a given time
      * @param Budget $budget
-     * @param DateTime|null $time
+     * @param Carbon|null $time
      * @return float
      */
-    public static function budgetAmountAt(Budget $budget, Carbon|null $time)
+    public static function budgetAmountAt(Budget $budget, Carbon|null $time): float
     {
         $calculateBudgetAmountFn = function () use ($budget, $time) {
             $operations = Operation::query()
@@ -209,12 +222,13 @@ class BudgetService
     /**
      * Returns the 'starting' date for a budget, e.g. when the first operation in that budget
      * was created
+     *
      * @param Budget $budget
      * @return Carbon
      */
-    public static function getStartDate(Budget $budget)
+    public static function getStartDate(Budget $budget): Carbon
     {
-        /** @var \Carbon\Carbon $date */
+        /** @var Carbon $date */
         $date = Operation::query()
             ->whereBelongsTo($budget)
             ->oldest()

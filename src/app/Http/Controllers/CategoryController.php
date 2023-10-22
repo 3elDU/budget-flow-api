@@ -5,28 +5,26 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CategoryCreateRequest;
 use App\Http\Requests\CategoryUpdateRequest;
 use App\Models\Category;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class CategoryController extends Controller
 {
     /**
      * Return all registered categories
      */
-    public function categories()
+    public function categories(): JsonResponse
     {
-        return response()->json(
-            Category::get()
-        );
+        return response()->json(Category::get());
     }
 
     /**
-     * Craete a new category.
+     * Create a new category.
      * Returns created category object
      */
-    public function create(CategoryCreateRequest $request)
+    public function create(CategoryCreateRequest $request): JsonResponse
     {
-        $data = $request->validated();
-
-        $category = Category::create($data);
+        $category = Category::create($request->validated());
 
         return response()->json($category);
     }
@@ -34,7 +32,7 @@ class CategoryController extends Controller
     /**
      * Return all operations having this category, paginated, 100 per page.
      */
-    public function operations(Category $category)
+    public function operations(Category $category): JsonResponse
     {
         return response()->json(
             $category->operations()->paginate(100)
@@ -45,11 +43,9 @@ class CategoryController extends Controller
      * Update a category.
      * Returns updated category object
      */
-    public function update(Category $category, CategoryUpdateRequest $request)
+    public function update(Category $category, CategoryUpdateRequest $request): JsonResponse
     {
-        $data = $request->validated();
-
-        $category->update($data);
+        $category->update($request->validated());
 
         return response()->json($category);
     }
@@ -58,10 +54,10 @@ class CategoryController extends Controller
      * Soft-delete a category.
      * Returns deleted category object
      */
-    public function delete(Category $category)
+    public function delete(Category $category): Response
     {
         $category->delete();
 
-        return response()->json($category);
+        return response()->noContent();
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Budget;
 use App\Models\Operation;
+use app\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use App\Services\FiltrationService;
 use App\Http\Requests\FiltersRequest;
@@ -11,6 +13,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\OperationResource;
 use App\Http\Requests\OperationCreateRequest;
 use App\Http\Requests\OperationUpdateRequest;
+use Symfony\Component\HttpFoundation\Response;
 
 class OperationController extends Controller
 {
@@ -19,7 +22,7 @@ class OperationController extends Controller
      */
     public function index(FiltersRequest $request)
     {
-        /** @var \app\Models\User $user */
+        /** @var User $user */
         $user = auth()->user();
         $query = Operation::query();
 
@@ -32,12 +35,12 @@ class OperationController extends Controller
                 continue;
             }
 
-            /** @var \App\Models\Budget $budget */
+            /** @var Budget $budget */
             $budget = Budget::query()->find($filter->value)->first();
 
             if (!$budget->users->contains($user)) {
-                // If a user is not a member of this budget, return 403 unauthorized
-                return response('not authorized', 403);
+                // If a user is not a member of this budget, return 403 forbidden
+                return response(['message' => 'You are not a member of this budget'], Response::HTTP_FORBIDDEN);
             }
         }
 
@@ -49,7 +52,7 @@ class OperationController extends Controller
     /**
      * Return a specific operation by id
      */
-    public function get(Operation $operation)
+    public function get(Operation $operation): JsonResponse
     {
         return response()->json($operation);
     }
@@ -58,7 +61,7 @@ class OperationController extends Controller
      * Create a new operation for a budget.
      * Returns newly created operation.
      */
-    public function create(Budget $budget, OperationCreateRequest $request)
+    public function create(Budget $budget, OperationCreateRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -74,7 +77,7 @@ class OperationController extends Controller
     /**
      * Update a specific operation
      */
-    public function update(Operation $operation, OperationUpdateRequest $request)
+    public function update(Operation $operation, OperationUpdateRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -89,7 +92,7 @@ class OperationController extends Controller
     /**
      * Delete a specified operation.
      */
-    public function delete(Operation $operation)
+    public function delete(Operation $operation): \Illuminate\Http\Response
     {
         $operation->delete();
 

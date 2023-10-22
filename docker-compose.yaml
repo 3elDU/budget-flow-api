@@ -8,6 +8,8 @@ services:
     environment:
       MARIADB_ROOT_PASSWORD: password
       MARIADB_DATABASE: budget_flow_api
+    ports:
+      - "3306:3306"
 
   cache:
     image: redis:latest

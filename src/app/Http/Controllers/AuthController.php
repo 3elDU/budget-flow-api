@@ -4,18 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->validated();
 
         if (!auth()->validate($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
         }
 
-        /** @var User */
+        /** @var $user User */
         $user = User::where('email', $credentials['email'])->first();
 
         return response()->json([
@@ -23,12 +25,12 @@ class AuthController extends Controller
         ]);
     }
 
-    public function me()
+    public function me(): JsonResponse
     {
         return response()->json(auth()->user());
     }
 
-    public function logout()
+    public function logout(): void
     {
         auth()->user()->currentAccessToken()->delete();
     }

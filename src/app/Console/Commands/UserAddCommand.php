@@ -6,6 +6,7 @@ use App\Http\Requests\UserCreateRequest;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class UserAddCommand extends Command
 {
@@ -25,8 +26,10 @@ class UserAddCommand extends Command
 
     /**
      * Execute the console command.
+     *
+     * @throws ValidationException
      */
-    public function handle()
+    public function handle(): void
     {
         $validator = Validator::make($this->arguments(), UserCreateRequest::rules());
 
@@ -34,15 +37,18 @@ class UserAddCommand extends Command
             foreach ($validator->messages()->getMessages() as $field => $error) {
                 $this->error($field . ": " . $error[0]);
             }
+
             return;
         }
 
         $arguments = $validator->validated();
+
         $user = User::create([
             'name' => $arguments['name'],
             'email' => $arguments['email'],
             'password' => $arguments['password'],
         ]);
+
         $this->info("User created, id: $user->id");
     }
 }

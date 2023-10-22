@@ -5,13 +5,16 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Translation\PotentiallyTranslatedString;
 
 class MoneyAmount implements ValidationRule
 {
     /**
      * Checks if the specified number is a valid amount of money for transaction
      *
-     * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     * @param string $attribute
+     * @param mixed $value
+     * @param Closure(string): PotentiallyTranslatedString $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -24,7 +27,7 @@ class MoneyAmount implements ValidationRule
         }
 
         // Test a value with regex, that is has no more than 2 digits after comma
-        if (!preg_match("/^\-?[0-9]+\.?[0-9]{0,2}$/", strval($value))) {
+        if (!preg_match("/^-?[0-9]+\.?[0-9]{0,2}$/", strval($value))) {
             $fail(":attribute must be a valid amount");
         }
     }

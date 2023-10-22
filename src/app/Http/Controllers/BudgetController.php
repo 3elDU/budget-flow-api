@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Carbon\Carbon;
 use App\Models\Budget;
 use App\Services\BudgetService;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use App\Structures\Enum\AnalyticsPeriod;
 use App\Http\Requests\BudgetCreateRequest;
@@ -16,25 +20,27 @@ class BudgetController extends Controller
     /**
      * List all budgets associated with the user
      */
-    public function budgets()
+    public function budgets(): JsonResponse
     {
-        return response()->json(
-            auth()->user()->budgets
-        );
+        /** @var User $user */
+        $user = auth()->user();
+
+        return response()->json($user->budgets);
     }
 
     /**
      * Get a specific budget by id
      */
-    public function budget(Budget $budget)
+    public function budget(Budget $budget): JsonResponse
     {
         return response()->json($budget);
     }
 
     /**
      * Get analytics for a budget
+     * @throws Exception
      */
-    public function analytics(Budget $budget, BudgetAnalyticsRequest $request)
+    public function analytics(Budget $budget, BudgetAnalyticsRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -51,18 +57,19 @@ class BudgetController extends Controller
         );
 
         $response = [];
+
         foreach ($periods as $period) {
             $response[] = BudgetService::analyticsForPeriod($budget, $period);
         }
 
-        return $response;
+        return response()->json($response);
     }
 
     /**
      * Update a budget.
      * Returns updated budget object
      */
-    public function update(Budget $budget, BudgetUpdateRequest $request)
+    public function update(Budget $budget, BudgetUpdateRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -75,7 +82,7 @@ class BudgetController extends Controller
     /**
      * Soft-delete a specific budget.
      */
-    public function delete(Budget $budget)
+    public function delete(Budget $budget): Response
     {
         $budget->delete();
 
@@ -86,7 +93,7 @@ class BudgetController extends Controller
      * Create a new budget.
      * Returns the newly created budget object
      */
-    public function create(BudgetCreateRequest $request)
+    public function create(BudgetCreateRequest $request): JsonResponse
     {
         $data = $request->validated();
 

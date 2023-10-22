@@ -10,28 +10,40 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class FiltrationService
 {
-    public static function makeDTO(array $filters)
+    /**
+     * @param array $filters
+     * @return FiltersDTO
+     * @throws Exception
+     */
+    public static function makeDTO(array $filters): FiltersDTO
     {
-        $dtos = array();
+        $dtos = [];
 
         foreach ($filters['filters'] as $filter) {
             if (is_null($filter['type'])) {
                 throw new Exception('type must not be null');
             }
             $dtos[] = match ($filter['type']) {
-                "where" => new FilterWhereDTO($filter['field'], $filter['operator'], $filter['value']),
-                default => throw new Exception('unknown type')
+                'where' => new FilterWhereDTO($filter['field'], $filter['operator'], $filter['value']),
+                default => throw new Exception('Unknown type'),
             };
         }
 
         return new FiltersDTO(collect($dtos));
     }
 
-    public static function performFiltration(Builder $query, FiltersDTO $filters)
+    /**
+     * @param Builder $query
+     * @param FiltersDTO $filters
+     * @return void
+     * @throws Exception
+     */
+    public static function performFiltration(Builder $query, FiltersDTO $filters): void
     {
         foreach ($filters->filters as $filter) {
             match ($filter->type) {
-                FilterType::Where => $query->where($filter->field, $filter->operator, $filter->value)
+                FilterType::Where => $query->where($filter->field, $filter->operator, $filter->value),
+                default => throw new Exception('Unknown type'),
             };
         }
     }
