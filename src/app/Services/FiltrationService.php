@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
+use Exception;
 use App\Structures\DTO\FiltersDTO;
+use Illuminate\Support\Collection;
 use App\Structures\Enum\FilterType;
 use App\Structures\DTO\FilterWhereDTO;
-use Exception;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class FiltrationService
@@ -18,6 +19,11 @@ class FiltrationService
     public static function makeDTO(array $filters): FiltersDTO
     {
         $dtos = [];
+
+        // Return an empty collection if 'filters' property is not set
+        if (!isset($filters['filters']) || is_null($filters['filters'])) {
+            return new FiltersDTO(new Collection());
+        }
 
         foreach ($filters['filters'] as $filter) {
             if (is_null($filter['type'])) {

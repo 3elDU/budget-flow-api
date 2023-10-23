@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
+use DateTime;
+use Exception;
 use Carbon\Carbon;
 use App\Models\Budget;
 use App\Models\Operation;
-use DateTime;
-use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use App\Structures\DTO\AnalyticsDataDTO;
@@ -30,9 +30,9 @@ class BudgetService
         if ($period == AnalyticsPeriod::All) {
             // If the request is to get analytics over the whole period,
             // create a single period spanning from the start to the end
-            return collect(
+            return collect([
                 new AnalyticsPeriodDTO($start, $end, $period)
-            );
+            ]);
         }
 
         /** @var AnalyticsPeriodDTO[] $periods */

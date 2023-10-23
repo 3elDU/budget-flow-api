@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use App\Http\Requests\LoginRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
+    /**
+     * Log in via email and password, and get a personal access token.
+     * @param LoginRequest $request
+     * @return JsonResponse
+     * @unauthenticated
+     */
     public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->validated();
@@ -25,13 +31,22 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Return the currently logged in user resource.
+     * @return \App\Http\Resources\UserResource
+     */
     public function me(): JsonResponse
     {
         return response()->json(auth()->user());
     }
 
+    /**
+     * Log out.
+     */
     public function logout(): void
     {
         auth()->user()->currentAccessToken()->delete();
+
+        response()->noContent();
     }
 }

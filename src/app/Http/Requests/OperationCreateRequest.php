@@ -17,7 +17,7 @@ class OperationCreateRequest extends FormRequest
         return [
             'name' => ['string', 'required', 'min:1', 'max:255'],
             'description' => ['string', 'nullable', 'min:1', 'max:4096'],
-            'amount' => ['required', new MoneyAmount]
+            'amount' => ['required', 'numeric', new MoneyAmount]
         ];
     }
 }
