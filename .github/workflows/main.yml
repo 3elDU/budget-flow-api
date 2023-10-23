@@ -20,6 +20,7 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         user: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
+        connect_timeout: 10s
         first_ssh: |
           cp $APP_DIR/.env ~/.env.backup
           rm -rf $APP_DIR
