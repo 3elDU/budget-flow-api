@@ -30,7 +30,7 @@ jobs:
         last_ssh: |
           cp ~/.env.backup $APP_DIR/.env
           rm ~/.env.backup
-          cp $APP_DIR
+          cd $APP_DIR
           composer install --no-dev --no-interaction --ansi
           php artisan migrate
           php artisan scribe:generate
