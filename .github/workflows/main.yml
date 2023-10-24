@@ -1,0 +1,36 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main, cicd ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Deploy
+      uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+      env:
+        APP_DIR: ${{ vars.APP_DIR }}
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        user: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        connect_timeout: 10s
+        first_ssh: |
+          cp $APP_DIR/.env ~/.env.backup
+          rm -rf $APP_DIR
+          mkdir -p $APP_DIR
+        scp: |
+          './src/*' => $APP_DIR/
+        last_ssh: |
+          cp ~/.env.backup $APP_DIR/.env
+          rm ~/.env.backup
+          cd $APP_DIR
+          composer install --no-dev --no-interaction --ansi
+          php artisan migrate --force
+          php artisan scribe:generate
