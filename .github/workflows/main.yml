@@ -28,9 +28,9 @@ jobs:
         scp: |
           './src/*' => $APP_DIR/
         last_ssh: |
-          cp ~/.env.backup $APP_DIR/.env
-          rm ~/.env.backup
-          cd $APP_DIR
-          (composer install --no-dev --no-interaction --ansi || 1)
-          php artisan migrate --force
-          php artisan scribe:generate
+          cp ~/.env.backup $APP_DIR/.env &&
+          rm ~/.env.backup &&
+          cd $APP_DIR ||
+          composer install --no-dev --no-interaction --ansi ||
+          php artisan migrate --force ||
+          php artisan scribe:generate ||
