@@ -31,6 +31,6 @@ jobs:
           cp ~/.env.backup $APP_DIR/.env
           rm ~/.env.backup
           cd $APP_DIR
-          composer install --no-dev --no-interaction --ansi
+          (composer install --quiet --no-dev --no-interaction --ansi || true)
           php artisan migrate --force
           php artisan scribe:generate
