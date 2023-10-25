@@ -14,7 +14,7 @@ class BasicDataSeeder extends Seeder
             User::firstOrCreate([
                 'name' => 'Admin',
                 'email' => env('ADMIN_USER_EMAIL'),
-                'password' => Hash::make(env('ADMIN_USER_PASSWORD'))
+                'password' => env('ADMIN_USER_PASSWORD')
             ]);
         }
     }
