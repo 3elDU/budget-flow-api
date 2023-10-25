@@ -2,11 +2,23 @@
 
 ## Running
 
+### Install dependencies
+```sh
+composer install
+```
+
 ### Copy .env file & generate key
 Copy `.env.example` file and generate application key:
 ```sh
 cp .env.example .env
 php artisan key:generate
+```
+Change other settings where neccessary.
+#### !!! Change `ADMIN_USER_EMAIL` and `ADMIN_USER_PASSWORD`
+
+### Generate API documentation with Scribe (optional)
+```sh
+php artisan scribe:generate
 ```
 
 ### Start all the containers in the background
@@ -14,18 +26,6 @@ php artisan key:generate
 docker compose up -d
 ```
 
-### Use Laravel Telescope (optional)
-```sh
-php artisan telescope:install
-```
-
-### Generate API documentation with Scribe (optional)
-```sh
-php artisan scribe:generate
-```
-
-## Generating static documentation
-Generate documentation with `php artisan scribe:generate`, 
 
 ## Project structure
 
