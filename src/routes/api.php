@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::get('/', 'budgets');
                 Route::get('{budget}', 'budget');
                 Route::get('{budget}/analytics', 'analytics');
+                Route::get('{budget}/amount', 'amount');
                 Route::put('{budget}', 'update');
                 Route::delete('{budget}', 'delete');
                 Route::post('/', 'create');

@@ -65,6 +65,11 @@ class BudgetController extends Controller
         return response()->json($response);
     }
 
+    public function amount(Budget $budget): float
+    {
+        return BudgetService::budgetAmountAt($budget, null);
+    }
+
     /**
      * Update a budget.
      * Returns updated budget object
