@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Budget;
+use App\Models\Convert;
 use App\Models\Category;
 use App\Models\Operation;
 use Illuminate\Database\Seeder;
@@ -47,5 +48,16 @@ class TestDataSeeder extends Seeder
                     ? $incomeCategories->toQuery()->inRandomOrder()->first()
                     : $expenseCategories->toQuery()->inRandomOrder()->first()
             ));
+
+        Convert::create([
+            'currency_from' => 'USD',
+            'currency_to' => 'UAH',
+            'rate' => 37
+        ]);
+        Convert::create([
+            'currency_from' => 'EUR',
+            'currency_to' => 'UAH',
+            'rate' => 40
+        ]);
     }
 }
