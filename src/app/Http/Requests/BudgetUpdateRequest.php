@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\HexColor;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BudgetUpdateRequest extends FormRequest
@@ -15,7 +16,8 @@ class BudgetUpdateRequest extends FormRequest
     {
         return [
             'name' => ['string', 'min:1', 'max:255'],
-            'description' => ['string', 'nullable', 'min:1', 'max:4095']
+            'description' => ['string', 'nullable', 'min:1', 'max:4095'],
+            'color_hex' => ['string', new HexColor],
         ];
     }
 }
