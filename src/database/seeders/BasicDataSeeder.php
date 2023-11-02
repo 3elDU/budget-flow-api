@@ -10,11 +10,13 @@ class BasicDataSeeder extends Seeder
 {
     public function run(): void
     {
-        if (User::where('email', env('ADMIN_USER_EMAIL'))->exists() === false) {
+        $adminEmail = env('ADMIN_USER_EMAIL', 'admin@example.com');
+
+        if (User::where('email', $adminEmail)->exists() === false) {
             User::firstOrCreate([
                 'name' => 'Admin',
-                'email' => env('ADMIN_USER_EMAIL'),
-                'password' => env('ADMIN_USER_PASSWORD')
+                'email' => $adminEmail,
+                'password' => env('ADMIN_USER_PASSWORD', 'password')
             ]);
         }
     }
