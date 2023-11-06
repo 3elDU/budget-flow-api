@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CategoryCreateRequest;
 use App\Http\Requests\CategoryUpdateRequest;
-use App\Models\Category;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 
+/**
+ * @group Category management
+ *
+ * Endpoints for managing categories
+ */
 class CategoryController extends Controller
 {
     /**

@@ -7,6 +7,9 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Requests\LoginRequest;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @group User authentication
+ */
 class AuthController extends Controller
 {
     /**

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use app\Models\User;
 use App\Models\Budget;
 use App\Models\Operation;
-use app\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use App\Services\FiltrationService;
@@ -15,6 +15,11 @@ use App\Http\Requests\OperationCreateRequest;
 use App\Http\Requests\OperationUpdateRequest;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @group Operation management
+ *
+ * Endpoints for managing operations
+ */
 class OperationController extends Controller
 {
     /**

@@ -15,6 +15,11 @@ use App\Http\Requests\BudgetCreateRequest;
 use App\Http\Requests\BudgetUpdateRequest;
 use App\Http\Requests\BudgetAnalyticsRequest;
 
+/**
+ * @group Budget management
+ *
+ * Endpoints for managing budgets
+ */
 class BudgetController extends Controller
 {
     /**
