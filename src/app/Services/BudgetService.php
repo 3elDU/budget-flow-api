@@ -56,7 +56,7 @@ class BudgetService
             $periods[] = new AnalyticsPeriodDTO(
                 $start,
                 $end,
-                $period
+                $period,
             );
         } else if ($previousDate != $end) {
             // If the periods array doesn't include the end date, append a new period
@@ -64,7 +64,7 @@ class BudgetService
             $periods[] = new AnalyticsPeriodDTO(
                 $periods[array_key_last($periods)]->end,
                 $end,
-                $period
+                $period,
             );
         }
 
@@ -82,6 +82,7 @@ class BudgetService
     public static function analyticsForPeriod(Budget $budget, AnalyticsPeriodDTO $period): array
     {
         $operations = BudgetService::operations($budget, $period);
+
         if ($operations->amounts->count() == 0) {
             return [
                 'period' => [$period->start, $period->end],
@@ -94,38 +95,17 @@ class BudgetService
         }
 
         // Calculate total money spent/earned over the specified period
-        $expensePerPeriod = 0.0;
-        $incomePerPeriod = 0.0;
-
-        foreach ($operations->amounts as $amount) {
-            if ($amount < 0) {
-                $expensePerPeriod += -$amount;
-            } else {
-                $incomePerPeriod += $amount;
-            }
-        }
+        $expensePerPeriod = $operations->amounts->filter(fn($amount) => $amount < 0)->sum();
+        $incomePerPeriod = $operations->amounts->filter(fn($amount) => $amount > 0)->sum();
 
         // Count the number of expenses during this period
-        $expenseCount = $operations->amounts
-            ->filter(fn ($amount) => $amount < 0.0)
-            ->count();
+        $expenseCount = $operations->amounts->filter(fn ($amount) => $amount < 0.0)->count();
 
-        $avgExpensePerPeriod = 0.0;
-        if ($expenseCount != 0) {
-            // Compute the average amount of money spent over all expenses from this period
-            $avgExpensePerPeriod = $expensePerPeriod / $expenseCount;
-        }
+        $avgExpensePerPeriod = $expenseCount != 0 ? ($expensePerPeriod / $expenseCount) : 0.0;
 
-        // Count the number of incomes during this period
-        $incomeCount = $operations->amounts
-            ->filter(fn ($amount) => $amount > 0.0)
-            ->count();
+        $incomeCount = $operations->amounts->filter(fn($amount) => $amount > 0.0)->count();
 
-        $avgIncomePerPeriod = 0.0;
-
-        if ($incomeCount != 0) {
-            $avgIncomePerPeriod = $incomePerPeriod / $incomeCount;
-        }
+        $avgIncomePerPeriod = $incomeCount != 0 ? ($incomePerPeriod / $incomeCount) : 0.0;
 
         return [
             'period' => [$period->start, $period->end],
@@ -196,27 +176,16 @@ class BudgetService
     public static function budgetAmountAt(Budget $budget, Carbon|null $time): float
     {
         $calculateBudgetAmountFn = function () use ($budget, $time) {
-            $operations = Operation::query()
+            return round(Operation::query()
                 ->whereBelongsTo($budget)
                 ->where('created_at', '<=', $time ?? now())
-                ->get();
-
-            $money = 0.0;
-
-            foreach ($operations as $operation) {
-                $money += $operation->amount;
-            }
-
-            return round($money, 2);
+                ->sum('amount'), 2);
         };
 
-        // Don't cache the budget amount if the time isn't specified
-        if (is_null($time)) {
-            return $calculateBudgetAmountFn();
-        }
-
-        return floatval(Cache::tags(["budget:{$budget->id}", 'amount_at'])
-            ->rememberForever($time, $calculateBudgetAmountFn));
+        return is_null($time)
+            ? $calculateBudgetAmountFn()
+            : floatval(Cache::tags(["budget:{$budget->id}", 'amount_at'])
+                ->rememberForever($time, $calculateBudgetAmountFn));
     }
 
     /**
