@@ -11,6 +11,7 @@ use App\Services\BudgetService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use App\Structures\Enum\AnalyticsPeriod;
+use App\Http\Requests\BudgetAmountRequest;
 use App\Http\Requests\BudgetCreateRequest;
 use App\Http\Requests\BudgetUpdateRequest;
 use App\Http\Requests\BudgetAnalyticsRequest;
@@ -70,9 +71,20 @@ class BudgetController extends Controller
         return response()->json($response);
     }
 
-    public function amount(Budget $budget): float
+    /**
+     * Returns budget amount at a specified date.
+     * If no date specified, returns current budget balance.
+     */
+    public function amount(Budget $budget, BudgetAmountRequest $request): float
     {
-        return BudgetService::budgetAmountAt($budget, null);
+        $data = $request->validated();
+
+        return BudgetService::budgetAmountAt(
+            $budget,
+            isset($data['date'])
+                ? Carbon::parse($data['date'])
+                : now()
+        );
     }
 
     /**
