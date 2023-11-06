@@ -129,10 +129,10 @@ class BudgetService
 
         return [
             'period' => [$period->start, $period->end],
-            'expense' => $expensePerPeriod,
-            'average_expense' => $avgExpensePerPeriod,
-            'income' => $incomePerPeriod,
-            'average_income' => $avgIncomePerPeriod,
+            'expense' => round($expensePerPeriod, 2),
+            'average_expense' => round($avgExpensePerPeriod, 2),
+            'income' => round($incomePerPeriod, 2),
+            'average_income' => round($avgIncomePerPeriod, 2),
             'budget_amount' => BudgetService::budgetAmountAt($budget, $period->end)
         ];
     }
@@ -207,7 +207,7 @@ class BudgetService
                 $money += $operation->amount;
             }
 
-            return $money;
+            return round($money, 2);
         };
 
         // Don't cache the budget amount if the time isn't specified
