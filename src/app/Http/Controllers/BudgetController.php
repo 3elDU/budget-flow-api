@@ -60,11 +60,12 @@ class BudgetController extends Controller
                 ? AnalyticsPeriod::fromString($data['period'])
                 : AnalyticsPeriod::All
         );
+        $data = BudgetService::queryData($periods);
 
         $response = [];
 
         foreach ($periods as $period) {
-            $response[] = BudgetService::analyticsForPeriod($budget, $period);
+            $response[] = BudgetService::analyticsForPeriod($budget, $data, $period);
         }
 
         return response()->json($response);
@@ -72,7 +73,7 @@ class BudgetController extends Controller
 
     public function amount(Budget $budget): float
     {
-        return BudgetService::budgetAmountAt($budget, null);
+        return BudgetService::budgetAmountAt($budget, null, null);
     }
 
     /**

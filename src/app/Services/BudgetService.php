@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use DateTime;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Budget;
@@ -72,24 +71,39 @@ class BudgetService
     }
 
     /**
+     * @param Collection<AnalyticsPeriodDTO> $periods
+     * @return Collection<Operation>
+     */
+    public static function queryData(Collection $periods): Collection
+    {
+        $data = Operation::query()
+            ->whereBetween('created_at', [$periods->first()->start, $periods->last()->end ?? now()])
+            ->select(['amount', 'created_at'])
+            ->get();
+
+        // dd($periods, $data);
+        return $data;
+    }
+
+    /**
      * Returns analytics object for the specified period
      *
-     * @param Budget $budget
+     * @param Collection<AnalyticsDataDTO> $data
      * @param AnalyticsPeriodDTO $period
      * @return array
      * @throws RelationNotFoundException
      */
-    public static function analyticsForPeriod(Budget $budget, AnalyticsPeriodDTO $period): array
+    public static function analyticsForPeriod(Budget $budget, Collection $data, AnalyticsPeriodDTO $period): array
     {
-        $operations = BudgetService::operations($budget, $period);
-        if ($operations->amounts->count() == 0) {
+        $operations = BudgetService::operationsForPeriod($budget, $data, $period);
+        if ($operations->operations->count() == 0) {
             return [
                 'period' => [$period->start, $period->end],
                 'expense' => 0,
                 'average_expense' => 0,
                 'income' => 0,
                 'average_income' => 0,
-                'budget_amount' => BudgetService::budgetAmountAt($budget, $period->end)
+                'budget_amount' => BudgetService::budgetAmountAt($budget, $data, $period->end)
             ];
         }
 
@@ -97,17 +111,17 @@ class BudgetService
         $expensePerPeriod = 0.0;
         $incomePerPeriod = 0.0;
 
-        foreach ($operations->amounts as $amount) {
-            if ($amount < 0) {
-                $expensePerPeriod += -$amount;
+        foreach ($operations->operations as $operation) {
+            if ($operation->amount < 0) {
+                $expensePerPeriod += -$operation->amount;
             } else {
-                $incomePerPeriod += $amount;
+                $incomePerPeriod += $operation->amount;
             }
         }
 
         // Count the number of expenses during this period
-        $expenseCount = $operations->amounts
-            ->filter(fn ($amount) => $amount < 0.0)
+        $expenseCount = $operations->operations
+            ->filter(fn ($operation) => $operation->amount < 0.0)
             ->count();
 
         $avgExpensePerPeriod = 0.0;
@@ -117,8 +131,8 @@ class BudgetService
         }
 
         // Count the number of incomes during this period
-        $incomeCount = $operations->amounts
-            ->filter(fn ($amount) => $amount > 0.0)
+        $incomeCount = $operations->operations
+            ->filter(fn ($operation) => $operation->amount > 0.0)
             ->count();
 
         $avgIncomePerPeriod = 0.0;
@@ -133,7 +147,7 @@ class BudgetService
             'average_expense' => $avgExpensePerPeriod,
             'income' => $incomePerPeriod,
             'average_income' => $avgIncomePerPeriod,
-            'budget_amount' => BudgetService::budgetAmountAt($budget, $period->end)
+            'budget_amount' => BudgetService::budgetAmountAt($budget, $data, $period->end)
         ];
     }
 
@@ -142,32 +156,25 @@ class BudgetService
      * along with array of amounts for each operation
      *
      * @param Budget $budget
+     * @param Collection<AnalyticsDataDTO>
      * @param AnalyticsPeriodDTO $period
      * @return AnalyticsDataDTO
      */
-    public static function operations(Budget $budget, AnalyticsPeriodDTO $period): AnalyticsDataDTO
+    public static function operationsForPeriod(Budget $budget, Collection $data, AnalyticsPeriodDTO $period): AnalyticsDataDTO
     {
-        $getOperationsFn = function () use ($budget, $period) {
-            $operations = Operation::query()
-                ->whereBelongsTo($budget)
-                ->whereBetween('created_at', [$period->start, $period->end ?? now()])
-                ->get();
+        $getOperationsFn = function () use ($data, $period) {
+            $operations = $data
+                ->whereBetween('created_at', [$period->start, $period->end ?? now()]);
 
-            $amounts = array();
-
-            foreach ($operations as $operation) {
-                $amounts[] = $operation->amount;
-            }
-
-            return json_encode($amounts);
+            return json_encode($operations);
         };
 
         // Don't cache the operations if the end time isn't determined,
         // or if the period is set to All
         if ($period->period == AnalyticsPeriod::All || is_null($period->end)) {
-            $amounts = json_decode($getOperationsFn());
+            $operations = json_decode($getOperationsFn());
         } else {
-            $amounts = json_decode(
+            $operations = json_decode(
                 Cache::tags([
                     "budget:$budget->id",
                     'operations',
@@ -183,23 +190,28 @@ class BudgetService
 
         return new AnalyticsDataDTO(
             $period,
-            collect($amounts),
+            collect($operations),
         );
     }
 
     /**
      * Returns how much money there is on a budget, on a given time
      * @param Budget $budget
+     * @param Collection<Operation>|null $data
      * @param Carbon|null $time
      * @return float
      */
-    public static function budgetAmountAt(Budget $budget, Carbon|null $time): float
+    public static function budgetAmountAt(Budget $budget, Collection|null $data, Carbon|null $time): float
     {
-        $calculateBudgetAmountFn = function () use ($budget, $time) {
-            $operations = Operation::query()
-                ->whereBelongsTo($budget)
-                ->where('created_at', '<=', $time ?? now())
-                ->get();
+        $calculateBudgetAmountFn = function () use ($budget, $data, $time) {
+            if (isset($data)) {
+                $operations = $data->where('created_at', '<=', $time ?? now());
+            } else {
+                $operations = Operation::query()
+                    ->whereBelongsTo($budget)
+                    ->where('created_at', '<=', $time ?? now())
+                    ->get();
+            }
 
             $money = 0.0;
 

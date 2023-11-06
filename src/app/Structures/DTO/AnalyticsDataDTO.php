@@ -8,11 +8,11 @@ class AnalyticsDataDTO
 {
     /**
      * @param AnalyticsPeriodDTO $period
-     * @param Collection<float> $amounts
+     * @param Collection<Operation> $operations
      */
     public function __construct(
         public AnalyticsPeriodDTO $period,
-        public Collection $amounts,
+        public Collection $operations,
     ) {
     }
 }

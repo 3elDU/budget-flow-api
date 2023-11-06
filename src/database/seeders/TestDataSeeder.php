@@ -35,7 +35,7 @@ class TestDataSeeder extends Seeder
         ]);
         $budget = Budget::factory()->hasAttached($user)->create();
 
-        Operation::factory(10)
+        Operation::factory(700)
             ->for($user)
             ->for($budget)
             ->create()
