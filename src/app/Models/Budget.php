@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Brick\Money\Currency;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -40,9 +41,9 @@ class Budget extends Model
     /**
      * Returns all the operations belonging to this budget
      */
-    public function operations(): BelongsToMany
+    public function operations(): HasMany
     {
-        return $this->belongsToMany(Operation::class);
+        return $this->hasMany(Operation::class);
     }
 
     /**

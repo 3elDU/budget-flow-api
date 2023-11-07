@@ -95,15 +95,15 @@ class BudgetService
         }
 
         // Calculate total money spent/earned over the specified period
-        $expensePerPeriod = $operations->amounts->filter(fn($amount) => $amount < 0)->sum();
-        $incomePerPeriod = $operations->amounts->filter(fn($amount) => $amount > 0)->sum();
+        $expensePerPeriod = $operations->amounts->filter(fn ($amount) => $amount < 0)->sum();
+        $incomePerPeriod = $operations->amounts->filter(fn ($amount) => $amount > 0)->sum();
 
         // Count the number of expenses during this period
         $expenseCount = $operations->amounts->filter(fn ($amount) => $amount < 0.0)->count();
 
         $avgExpensePerPeriod = $expenseCount != 0 ? ($expensePerPeriod / $expenseCount) : 0.0;
 
-        $incomeCount = $operations->amounts->filter(fn($amount) => $amount > 0.0)->count();
+        $incomeCount = $operations->amounts->filter(fn ($amount) => $amount > 0.0)->count();
 
         $avgIncomePerPeriod = $incomeCount != 0 ? ($incomePerPeriod / $incomeCount) : 0.0;
 
@@ -176,8 +176,7 @@ class BudgetService
     public static function budgetAmountAt(Budget $budget, Carbon|null $time): float
     {
         $calculateBudgetAmountFn = function () use ($budget, $time) {
-            return round(Operation::query()
-                ->whereBelongsTo($budget)
+            return round($budget->operations()
                 ->where('created_at', '<=', $time ?? now())
                 ->sum('amount'), 2);
         };

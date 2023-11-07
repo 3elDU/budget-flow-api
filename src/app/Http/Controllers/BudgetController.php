@@ -10,11 +10,13 @@ use Illuminate\Http\Response;
 use App\Services\BudgetService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use App\Http\Resources\BudgetResource;
 use App\Structures\Enum\AnalyticsPeriod;
 use App\Http\Requests\BudgetAmountRequest;
 use App\Http\Requests\BudgetCreateRequest;
 use App\Http\Requests\BudgetUpdateRequest;
 use App\Http\Requests\BudgetAnalyticsRequest;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 /**
  * @group Budget management
@@ -26,20 +28,20 @@ class BudgetController extends Controller
     /**
      * List all budgets associated with the user
      */
-    public function budgets(): JsonResponse
+    public function budgets(): ResourceCollection
     {
         /** @var User $user */
         $user = auth()->user();
 
-        return response()->json($user->budgets);
+        return BudgetResource::collection($user->budgets);
     }
 
     /**
      * Get a specific budget by id
      */
-    public function budget(Budget $budget): JsonResponse
+    public function budget(Budget $budget): BudgetResource
     {
-        return response()->json($budget);
+        return new BudgetResource($budget);
     }
 
     /**
