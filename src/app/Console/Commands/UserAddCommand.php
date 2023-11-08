@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Requests\UserCreateRequest;
 use App\Models\User;
 use Illuminate\Console\Command;
+use App\Http\Requests\UserCreateRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -43,12 +43,19 @@ class UserAddCommand extends Command
 
         $arguments = $validator->validated();
 
+        /** @var User $user */
         $user = User::create([
             'name' => $arguments['name'],
             'email' => $arguments['email'],
             'password' => $arguments['password'],
         ]);
 
-        $this->info("User created, id: $user->id");
+        if ($user) {
+            $user->settings()->create();
+
+            $this->info("User created, id: $user->id");
+        } else {
+            $this->error('There was a problem creating the user');
+        }
     }
 }

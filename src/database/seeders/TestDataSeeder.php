@@ -33,6 +33,7 @@ class TestDataSeeder extends Seeder
             'email' => 'user@example.com',
             'password' => 'password'
         ]);
+        $user->settings()->create();
         $budget = Budget::factory()->hasAttached($user)->create();
 
         Operation::factory(10)

@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Foundation\Auth\User as AuthUser;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Auth\User as AuthUser;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @property int id
@@ -27,6 +28,14 @@ class User extends AuthUser
 
     protected $guarded = ['id'];
     public $hidden = ['password'];
+
+    /**
+     * Returns settings model for the user
+     */
+    public function settings(): HasOne
+    {
+        return $this->hasOne(UserSettings::class);
+    }
 
     /**
      * Returns all the budgets associated with this user

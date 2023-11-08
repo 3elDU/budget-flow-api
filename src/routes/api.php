@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OperationController;
@@ -48,5 +49,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::group(['prefix' => 'users'], function () {
         Route::get('me', [AuthController::class, 'me']);
+
+        Route::get('me/settings', [UserController::class, 'settings']);
+        Route::put('me/settings', [UserController::class, 'updateSettings']);
     });
 });
