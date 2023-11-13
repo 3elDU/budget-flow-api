@@ -74,6 +74,55 @@ class BudgetController extends Controller
     }
 
     /**
+     * Get analytics for all budgets, combined
+     */
+    public function analyticsAll(BudgetAnalyticsRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+        /** @var User $user */
+        $user = auth()->user();
+
+        // Find the earliest start date from all budgets
+        $budgets = $user->budgets()
+            ->orderBy('created_at')
+            ->get();
+
+        $start_date = $budgets[0]->created_at;
+
+        $periods = BudgetService::calculatePeriods(
+            isset($data['start_time'])
+                ? Carbon::parse($data['start_time'])
+                : $start_date,
+            isset($data['end_time'])
+                ? Carbon::parse($data['end_time'])
+                : null,
+            isset($data['period'])
+                ? AnalyticsPeriod::fromString($data['period'])
+                : AnalyticsPeriod::All
+        );
+
+        $response = [];
+
+        foreach ($periods as $period) {
+            $analytics = collect();
+            foreach ($budgets as $budget) {
+                $analytics->push(BudgetService::analyticsForPeriod($budget, $period));
+            }
+
+            $response[] = [
+                'period' => [$period->start, $period->end],
+                'expense' => $analytics->sum('expense'),
+                'income' => $analytics->sum('income'),
+                'average_expense' => $analytics->average('average_expense'),
+                'average_income' => $analytics->average('average_income'),
+                'budget_amount' => $analytics->sum('budget_amount')
+            ];
+        }
+
+        return response()->json($response);
+    }
+
+    /**
      * Returns budget amount at a specified date.
      * If no date specified, returns current budget balance.
      */

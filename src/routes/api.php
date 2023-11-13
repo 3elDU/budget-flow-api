@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
             });
         Route::post('{budget}/operations', [OperationController::class, 'create']);
     });
+    Route::get('/analytics', [BudgetController::class, 'analyticsAll']);
 
     Route::controller(OperationController::class)
         ->prefix('operations')
