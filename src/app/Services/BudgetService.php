@@ -109,8 +109,8 @@ class BudgetService
 
         return [
             'period' => [$period->start, $period->end],
-            'expense' => round($expensePerPeriod, 2),
-            'average_expense' => round($avgExpensePerPeriod, 2),
+            'expense' => abs(round($expensePerPeriod, 2)),
+            'average_expense' => abs(round($avgExpensePerPeriod, 2)),
             'income' => round($incomePerPeriod, 2),
             'average_income' => round($avgIncomePerPeriod, 2),
             'budget_amount' => BudgetService::budgetAmountAt($budget, $period->end)
