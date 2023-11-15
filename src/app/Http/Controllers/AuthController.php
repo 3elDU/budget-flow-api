@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\LoginRequest;
+use App\Http\Resources\UserResource;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -38,9 +39,9 @@ class AuthController extends Controller
      * Return the currently logged in user resource.
      * @return \App\Http\Resources\UserResource
      */
-    public function me(): JsonResponse
+    public function me(): UserResource
     {
-        return response()->json(auth()->user());
+        return new UserResource(auth()->user());
     }
 
     /**
