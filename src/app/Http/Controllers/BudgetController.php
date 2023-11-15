@@ -111,11 +111,11 @@ class BudgetController extends Controller
 
             $response[] = [
                 'period' => [$period->start, $period->end],
-                'expense' => $analytics->sum('expense'),
-                'income' => $analytics->sum('income'),
-                'average_expense' => $analytics->average('average_expense'),
-                'average_income' => $analytics->average('average_income'),
-                'budget_amount' => $analytics->sum('budget_amount')
+                'expense' => round($analytics->sum('expense'), 2),
+                'income' => round($analytics->sum('income'), 2),
+                'average_expense' => round($analytics->average('average_expense'), 2),
+                'average_income' => round($analytics->average('average_income'), 2),
+                'budget_amount' => round($analytics->sum('budget_amount'), 2),
             ];
         }
 
