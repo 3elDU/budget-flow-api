@@ -16,6 +16,7 @@ use App\Http\Requests\BudgetAmountRequest;
 use App\Http\Requests\BudgetCreateRequest;
 use App\Http\Requests\BudgetUpdateRequest;
 use App\Http\Requests\BudgetAnalyticsRequest;
+use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 /**
@@ -87,7 +88,7 @@ class BudgetController extends Controller
             ->orderBy('created_at')
             ->get();
 
-        $start_date = $budgets[0]->created_at;
+        $start_date = $budgets->firstOrFail();
 
         $periods = BudgetService::calculatePeriods(
             isset($data['start_time'])
