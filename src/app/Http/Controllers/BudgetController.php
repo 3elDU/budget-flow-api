@@ -88,7 +88,7 @@ class BudgetController extends Controller
             ->orderBy('created_at')
             ->get();
 
-        $start_date = $budgets->firstOrFail();
+        $start_date = $budgets->firstOrFail()->created_at;
 
         $periods = BudgetService::calculatePeriods(
             isset($data['start_time'])
