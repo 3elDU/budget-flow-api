@@ -87,6 +87,9 @@ class BudgetController extends Controller
         $budgets = $user->budgets()
             ->orderBy('created_at')
             ->get();
+        if ($budgets->isEmpty()) {
+            return response()->noContent(404);
+        }
 
         $start_date = $budgets->firstOrFail()->created_at;
 

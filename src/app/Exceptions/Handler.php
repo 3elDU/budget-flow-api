@@ -25,9 +25,7 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $exception) {
-            if ($exception instanceof ItemNotFoundException) {
-                return response()->noContent(404);
-            }
+            //
         });
     }
 }
