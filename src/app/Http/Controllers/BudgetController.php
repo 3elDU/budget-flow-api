@@ -16,7 +16,6 @@ use App\Http\Requests\BudgetAmountRequest;
 use App\Http\Requests\BudgetCreateRequest;
 use App\Http\Requests\BudgetUpdateRequest;
 use App\Http\Requests\BudgetAnalyticsRequest;
-use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 /**
@@ -77,7 +76,7 @@ class BudgetController extends Controller
     /**
      * Get analytics for all budgets, combined
      */
-    public function analyticsAll(BudgetAnalyticsRequest $request): JsonResponse
+    public function analyticsAll(BudgetAnalyticsRequest $request): JsonResponse | Response
     {
         $data = $request->validated();
         /** @var User $user */
