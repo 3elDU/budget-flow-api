@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use DateTime;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Budget;
+use Brick\Money\Money;
 use App\Models\Operation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -95,15 +95,17 @@ class BudgetService
         }
 
         // Calculate total money spent/earned over the specified period
-        $expensePerPeriod = $operations->amounts->filter(fn ($amount) => $amount < 0)->sum();
-        $incomePerPeriod = $operations->amounts->filter(fn ($amount) => $amount > 0)->sum();
+        $expensePerPeriod = $operations->amounts->filter(fn ($amount) => $amount->isNegative())
+            ->sum(fn ($amount) => $amount->getAmount()->toFloat());
+        $incomePerPeriod = $operations->amounts->filter(fn ($amount) => $amount->isPositive())
+            ->sum(fn ($amount) => $amount->getAmount()->toFloat());
 
         // Count the number of expenses during this period
-        $expenseCount = $operations->amounts->filter(fn ($amount) => $amount < 0.0)->count();
+        $expenseCount = $operations->amounts->filter(fn ($amount) => $amount->isNegative())->count();
 
         $avgExpensePerPeriod = $expenseCount != 0 ? ($expensePerPeriod / $expenseCount) : 0.0;
 
-        $incomeCount = $operations->amounts->filter(fn ($amount) => $amount > 0.0)->count();
+        $incomeCount = $operations->amounts->filter(fn ($amount) => $amount->isPositive())->count();
 
         $avgIncomePerPeriod = $incomeCount != 0 ? ($incomePerPeriod / $incomeCount) : 0.0;
 
@@ -163,7 +165,7 @@ class BudgetService
 
         return new AnalyticsDataDTO(
             $period,
-            collect($amounts),
+            collect($amounts)->map(fn ($amount) => Money::of($amount->amount, $amount->currency)),
         );
     }
 
@@ -182,9 +184,9 @@ class BudgetService
         };
 
         return is_null($time)
-            ? $calculateBudgetAmountFn()
+            ? $calculateBudgetAmountFn() / 100.0
             : floatval(Cache::tags(["budget:{$budget->id}", 'amount_at'])
-                ->rememberForever($time, $calculateBudgetAmountFn));
+                ->rememberForever($time, $calculateBudgetAmountFn)) / 100.0;
     }
 
     /**

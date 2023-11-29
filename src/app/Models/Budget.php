@@ -52,7 +52,7 @@ class Budget extends Model
     protected function currency(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value, array $attributes) => Currency::of($attributes["name"]),
+            get: fn () => Currency::of($this->currency_iso),
             set: fn (Currency $value) => $value->getCurrencyCode(),
         );
     }

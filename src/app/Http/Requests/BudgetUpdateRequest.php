@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\HexColor;
+use App\Rules\CurrencyCode;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BudgetUpdateRequest extends FormRequest
@@ -18,6 +19,7 @@ class BudgetUpdateRequest extends FormRequest
             'name' => ['string', 'min:1', 'max:255'],
             'description' => ['string', 'nullable', 'min:1', 'max:4095'],
             'color_hex' => ['string', new HexColor],
+            'currency_iso' => ['string', 'required', new CurrencyCode],
         ];
     }
 }

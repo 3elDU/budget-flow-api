@@ -145,14 +145,14 @@ class BudgetController extends Controller
      * Update a budget.
      * Returns updated budget object
      */
-    public function update(Budget $budget, BudgetUpdateRequest $request): JsonResponse
+    public function update(Budget $budget, BudgetUpdateRequest $request): BudgetResource
     {
         $data = $request->validated();
 
         $budget->update($data);
         $budget->save();
 
-        return response()->json($budget);
+        return new BudgetResource($budget);
     }
 
     /**
@@ -169,13 +169,13 @@ class BudgetController extends Controller
      * Create a new budget.
      * Returns the newly created budget object
      */
-    public function create(BudgetCreateRequest $request): JsonResponse
+    public function create(BudgetCreateRequest $request): BudgetResource
     {
         $data = $request->validated();
 
         $budget = Budget::create($data);
         $budget->users()->attach(auth()->user());
 
-        return response()->json($budget);
+        return new BudgetResource($budget);
     }
 }

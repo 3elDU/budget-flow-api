@@ -14,11 +14,13 @@ class OperationResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        /** @var \App\Models\Operation $this */
+
         return [
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'amount' => $this->amount,
+            'amount' => $this->amount->getAmount()->toFloat(),
             'created_at' => $this->created_at,
         ];
     }

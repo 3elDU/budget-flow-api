@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use app\Models\User;
 use App\Models\Budget;
+use Brick\Money\Money;
 use App\Models\Operation;
-use Illuminate\Http\JsonResponse;
+use Brick\Math\RoundingMode;
 use Illuminate\Routing\Controller;
 use App\Services\FiltrationService;
 use App\Http\Requests\FiltersRequest;
@@ -57,32 +58,32 @@ class OperationController extends Controller
     /**
      * Return a specific operation by id
      */
-    public function get(Operation $operation): JsonResponse
+    public function get(Operation $operation): OperationResource
     {
-        return response()->json($operation);
+        return new OperationResource($operation);
     }
 
     /**
      * Create a new operation for a budget.
      * Returns newly created operation.
      */
-    public function create(Budget $budget, OperationCreateRequest $request): JsonResponse
+    public function create(Budget $budget, OperationCreateRequest $request): OperationResource
     {
         $data = $request->validated();
 
         $operation = Operation::create([
             'budget_id' => $budget->id,
             'user_id' => auth()->user()->id,
-            ...$data,
-        ]);
+            'amount' => Money::of($data['amount'], $budget->currency, roundingMode: RoundingMode::HALF_CEILING),
+        ] + $data);
 
-        return response()->json($operation);
+        return new OperationResource($operation);
     }
 
     /**
      * Update a specific operation
      */
-    public function update(Operation $operation, OperationUpdateRequest $request): JsonResponse
+    public function update(Operation $operation, OperationUpdateRequest $request): OperationResource
     {
         $data = $request->validated();
 
@@ -91,7 +92,7 @@ class OperationController extends Controller
         // Invalidate cache for this budget
         Cache::tags("budget:{$operation->budget->id}")->flush();
 
-        return response()->json($operation);
+        return new OperationResource($operation);
     }
 
     /**
