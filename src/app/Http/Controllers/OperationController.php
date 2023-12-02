@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use app\Models\User;
 use App\Models\Budget;
 use Brick\Money\Money;
@@ -30,7 +31,7 @@ class OperationController extends Controller
     {
         /** @var User $user */
         $user = auth()->user();
-        $query = Operation::query();
+        $query = Operation::query()->with('categories');
 
         $filters = $request->validated();
         $filtersDTO = FiltrationService::makeDTO($filters);
@@ -52,7 +53,9 @@ class OperationController extends Controller
 
         FiltrationService::performFiltration($query, $filtersDTO);
 
-        return OperationResource::collection($query->paginate(100));
+        $query->orderBy('created_at', 'desc');
+
+        return OperationResource::collection($query->paginate(10));
     }
 
     /**
@@ -76,6 +79,10 @@ class OperationController extends Controller
             'user_id' => auth()->user()->id,
             'amount' => Money::of($data['amount'], $budget->currency, roundingMode: RoundingMode::HALF_CEILING),
         ] + $data);
+
+        $categories = Category::whereIn('id', $data['categories'])->get();
+
+        $operation->categories()->attach($categories);
 
         return new OperationResource($operation);
     }

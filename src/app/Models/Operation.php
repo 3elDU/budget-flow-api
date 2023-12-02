@@ -58,7 +58,7 @@ class Operation extends Model
 
     public function amount(): Attribute {
         return Attribute::make(
-            get: fn () => Money::ofMinor($this->attributes['amount'], $this->budget->currency_iso),
+            get: fn () => Money::ofMinor(round($this->attributes['amount']), $this->budget->currency_iso),
             set: fn (Money $money) => $money->getMinorAmount()->toInt(),
         );
     }
