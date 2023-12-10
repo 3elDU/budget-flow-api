@@ -11,6 +11,7 @@ use Brick\Money\Exception\UnknownCurrencyException;
 use Brick\Money\Money;
 use App\Models\Operation;
 use Brick\Math\RoundingMode;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -106,6 +107,7 @@ class OperationController extends Controller
             'budget_id' => $budget->id,
             'user_id' => auth()->user()->id,
             'amount' => Money::of($data['amount'], $budget->currency, roundingMode: RoundingMode::HALF_CEILING),
+            'made_at' => Carbon::parse($data['made_at']),
         ] + $data);
 
         $categories = Category::whereIn('id', $data['categories'])->get();
