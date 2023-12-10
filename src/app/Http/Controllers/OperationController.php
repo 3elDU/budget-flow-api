@@ -5,16 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use app\Models\User;
 use App\Models\Budget;
+use Brick\Math\Exception\NumberFormatException;
+use Brick\Math\Exception\RoundingNecessaryException;
+use Brick\Money\Exception\UnknownCurrencyException;
 use Brick\Money\Money;
 use App\Models\Operation;
 use Brick\Math\RoundingMode;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Routing\Controller;
 use App\Services\FiltrationService;
 use App\Http\Requests\FiltersRequest;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\OperationResource;
 use App\Http\Requests\OperationRequest;
-use App\Http\Requests\OperationUpdateRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -26,8 +31,12 @@ class OperationController extends Controller
 {
     /**
      * Return all operations, paginated, 100 per page.
+     *
+     * @param FiltersRequest $request
+     * @return AnonymousResourceCollection<OperationResource>|JsonResponse
+     * @throws Exception
      */
-    public function index(FiltersRequest $request)
+    public function index(FiltersRequest $request): AnonymousResourceCollection | JsonResponse
     {
         /** @var User $user */
         $user = auth()->user();
@@ -51,7 +60,7 @@ class OperationController extends Controller
 
             if (!$budget->users->contains($user)) {
                 // If a user is not a member of this budget, return 403 forbidden
-                return response(['message' => 'You are not a member of this budget'], Response::HTTP_FORBIDDEN);
+                return response()->json(['message' => 'You are not a member of this budget'], Response::HTTP_FORBIDDEN);
             }
         }
 
@@ -64,6 +73,9 @@ class OperationController extends Controller
 
     /**
      * Return a specific operation by id
+     *
+     * @param Operation $operation
+     * @return OperationResource
      */
     public function get(Operation $operation): OperationResource
     {
@@ -72,7 +84,13 @@ class OperationController extends Controller
 
     /**
      * Create a new operation for a budget.
-     * Returns newly created operation.
+     *
+     * @param Budget $budget
+     * @param OperationRequest $request
+     * @return OperationResource
+     * @throws NumberFormatException
+     * @throws RoundingNecessaryException
+     * @throws UnknownCurrencyException
      */
     public function create(Budget $budget, OperationRequest $request): OperationResource
     {
@@ -93,6 +111,13 @@ class OperationController extends Controller
 
     /**
      * Update a specific operation
+     *
+     * @param Operation $operation
+     * @param OperationRequest $request
+     * @return OperationResource
+     * @throws NumberFormatException
+     * @throws RoundingNecessaryException
+     * @throws UnknownCurrencyException
      */
     public function update(Operation $operation, OperationRequest $request): OperationResource
     {
@@ -110,6 +135,10 @@ class OperationController extends Controller
 
     /**
      * Delete a specified operation.
+     *
+     * @param Operation $operation
+     * @return \Illuminate\Http\Response
+     * @response 204 {}
      */
     public function delete(Operation $operation): \Illuminate\Http\Response
     {

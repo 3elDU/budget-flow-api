@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CategoryResource;
+use App\Http\Resources\OperationResource;
 use App\Models\Category;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CategoryRequest;
-use App\Http\Requests\CategoryUpdateRequest;
 
 /**
  * @group Category management
@@ -16,48 +18,59 @@ use App\Http\Requests\CategoryUpdateRequest;
 class CategoryController extends Controller
 {
     /**
-     * Return all registered categories
+     * Return all categories.
+     *
+     * @return AnonymousResourceCollection<CategoryResource>
      */
-    public function categories(): JsonResponse
+    public function categories(): AnonymousResourceCollection
     {
-        return response()->json(Category::get());
+        return CategoryResource::collection(Category::get());
     }
 
     /**
      * Create a new category.
-     * Returns created category object
+     *
+     * @param CategoryRequest $request
+     * @return CategoryResource
      */
-    public function create(CategoryRequest $request): JsonResponse
+    public function create(CategoryRequest $request): CategoryResource
     {
         $category = Category::create($request->validated());
 
-        return response()->json($category);
+        return CategoryResource::make($category);
     }
 
     /**
      * Return all operations having this category, paginated, 100 per page.
+     *
+     * @param Category $category
+     * @return AnonymousResourceCollection<OperationResource>
      */
-    public function operations(Category $category): JsonResponse
+    public function operations(Category $category): AnonymousResourceCollection
     {
-        return response()->json(
-            $category->operations()->paginate(100)
-        );
+        return OperationResource::collection($category->operations()->paginate(100));
     }
 
     /**
      * Update a category.
-     * Returns updated category object
+     *
+     * @param Category $category
+     * @param CategoryRequest $request
+     * @return CategoryResource
      */
-    public function update(Category $category, CategoryRequest $request): JsonResponse
+    public function update(Category $category, CategoryRequest $request): CategoryResource
     {
         $category->update($request->validated());
 
-        return response()->json($category);
+        return CategoryResource::make($category);
     }
 
     /**
      * Soft-delete a category.
-     * Returns deleted category object
+     *
+     * @param Category $category
+     * @return Response
+     * @response 204 {}
      */
     public function delete(Category $category): Response
     {

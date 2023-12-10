@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string updated_at
  * @property Collection<Budget> budgets
  * @property Collection<Operation> operations
+ * @property UserSettings settings
  */
 class User extends AuthUser
 {

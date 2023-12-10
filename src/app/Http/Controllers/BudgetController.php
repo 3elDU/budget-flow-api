@@ -14,7 +14,6 @@ use App\Http\Resources\BudgetResource;
 use App\Structures\Enum\AnalyticsPeriod;
 use App\Http\Requests\BudgetAmountRequest;
 use App\Http\Requests\BudgetRequest;
-use App\Http\Requests\BudgetUpdateRequest;
 use App\Http\Requests\BudgetAnalyticsRequest;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -27,6 +26,8 @@ class BudgetController extends Controller
 {
     /**
      * List all budgets associated with the user
+     *
+     * @return ResourceCollection<BudgetResource>
      */
     public function budgets(): ResourceCollection
     {
@@ -38,6 +39,9 @@ class BudgetController extends Controller
 
     /**
      * Get a specific budget by id
+     *
+     * @param Budget $budget
+     * @return BudgetResource
      */
     public function budget(Budget $budget): BudgetResource
     {
@@ -46,7 +50,23 @@ class BudgetController extends Controller
 
     /**
      * Get analytics for a budget
+     * @param Budget $budget
+     * @param BudgetAnalyticsRequest $request
+     * @return JsonResponse
      * @throws Exception
+     * @response [
+     *  {
+     *      "period": [
+     *          "2023-01-01T00:00:00.000000Z",
+     *          "2023-01-08T00:00:00.000000Z"
+     *      ],
+     *      "expense": -2369.5,
+     *      "average_expense": -59.24,
+     *      "income": 2998.6,
+     *      "average_income": 74.97,
+     *      "budget_amount": 629.1
+     *  }
+     * ]
      */
     public function analytics(Budget $budget, BudgetAnalyticsRequest $request): JsonResponse
     {
@@ -75,6 +95,22 @@ class BudgetController extends Controller
 
     /**
      * Get analytics for all budgets, combined
+     * @param BudgetAnalyticsRequest $request
+     * @return JsonResponse|Response
+     * @throws Exception
+     * @response [
+     *  {
+     *      "period": [
+     *          "2023-01-01T00:00:00.000000Z",
+     *          "2023-01-08T00:00:00.000000Z"
+     *      ],
+     *      "expense": -2369.5,
+     *      "average_expense": -59.24,
+     *      "income": 2998.6,
+     *      "average_income": 74.97,
+     *      "budget_amount": 629.1
+     *  }
+     * ]
      */
     public function analyticsAll(BudgetAnalyticsRequest $request): JsonResponse | Response
     {
@@ -128,6 +164,9 @@ class BudgetController extends Controller
     /**
      * Returns budget amount at a specified date.
      * If no date specified, returns current budget balance.
+     * @param Budget $budget
+     * @param BudgetAmountRequest $request
+     * @return float
      */
     public function amount(Budget $budget, BudgetAmountRequest $request): float
     {
@@ -144,6 +183,9 @@ class BudgetController extends Controller
     /**
      * Update a budget.
      * Returns updated budget object
+     * @param Budget $budget
+     * @param BudgetRequest $request
+     * @return BudgetResource
      */
     public function update(Budget $budget, BudgetRequest $request): BudgetResource
     {
@@ -157,6 +199,10 @@ class BudgetController extends Controller
 
     /**
      * Soft-delete a specific budget.
+     * @param Budget $budget
+     * @return Response
+     * @throws Exception
+     * @response 204 {}
      */
     public function delete(Budget $budget): Response
     {
@@ -168,6 +214,8 @@ class BudgetController extends Controller
     /**
      * Create a new budget.
      * Returns the newly created budget object
+     * @param BudgetRequest $request
+     * @return BudgetResource
      */
     public function create(BudgetRequest $request): BudgetResource
     {

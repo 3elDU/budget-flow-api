@@ -37,7 +37,7 @@ class AuthController extends Controller
 
     /**
      * Return the currently logged in user resource.
-     * @return \App\Http\Resources\UserResource
+     * @return UserResource
      */
     public function me(): UserResource
     {
@@ -46,11 +46,13 @@ class AuthController extends Controller
 
     /**
      * Log out.
+     * @return \Illuminate\Http\Response
+     * @response 204 {}
      */
-    public function logout(): void
+    public function logout(): \Illuminate\Http\Response
     {
         auth()->user()->currentAccessToken()->delete();
 
-        response()->noContent();
+        return response()->noContent();
     }
 }
