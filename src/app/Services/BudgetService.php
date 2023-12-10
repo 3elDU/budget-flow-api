@@ -132,7 +132,7 @@ class BudgetService
         $getOperationsFn = function () use ($budget, $period) {
             $operations = Operation::query()
                 ->whereBelongsTo($budget)
-                ->whereBetween('created_at', [$period->start, $period->end ?? now()])
+                ->whereBetween('made_at', [$period->start, $period->end ?? now()])
                 ->get();
 
             $amounts = array();
@@ -179,7 +179,7 @@ class BudgetService
     {
         $calculateBudgetAmountFn = function () use ($budget, $time) {
             return round($budget->operations()
-                ->where('created_at', '<=', $time ?? now())
+                ->where('made_at', '<=', $time ?? now())
                 ->sum('amount'), 2);
         };
 
@@ -203,7 +203,7 @@ class BudgetService
             ->whereBelongsTo($budget)
             ->oldest()
             ->firstOrFail()
-            ->created_at;
+            ->made_at;
         // Set time to 00:00
         $date->setTime(0, 0);
 
