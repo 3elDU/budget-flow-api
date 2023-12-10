@@ -19,6 +19,7 @@ class FiltersRequest extends FormRequest
             'filters.*.field' => ['string', 'required'],
             'filters.*.operator' => ['string', 'required'],
             'filters.*.value' => ['nullable', 'required'],
+            ...(new PaginatorRequest())->rules(),
         ];
     }
 }

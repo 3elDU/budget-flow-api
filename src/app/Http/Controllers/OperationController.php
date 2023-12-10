@@ -33,8 +33,8 @@ class OperationController extends Controller
         $user = auth()->user();
         $query = Operation::query()->with('categories');
 
-        $filters = $request->validated();
-        $filtersDTO = FiltrationService::makeDTO($filters);
+        $data = $request->validated();
+        $filtersDTO = FiltrationService::makeDTO($data);
 
         // If the user is querying 'budget_id', check if they have permission for the budget(s)
         foreach ($filtersDTO->filters as $filter) {
@@ -55,7 +55,7 @@ class OperationController extends Controller
 
         $query->orderBy('created_at', 'desc');
 
-        return OperationResource::collection($query->paginate(10));
+        return OperationResource::collection($query->paginate($data['per_page'] ?? 10));
     }
 
     /**
