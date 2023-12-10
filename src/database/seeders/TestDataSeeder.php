@@ -45,7 +45,7 @@ class TestDataSeeder extends Seeder
             // If the amount is negative, attach an expense category.
             ->each(fn (Operation $operation) =>
             $operation->categories()->attach(
-                $operation->amount > 0
+                $operation->amount->isGreaterThan(0)
                     ? $incomeCategories->toQuery()->inRandomOrder()->first()
                     : $expenseCategories->toQuery()->inRandomOrder()->first()
             ));

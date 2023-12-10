@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Operation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -25,7 +26,8 @@ class OperationResource extends JsonResource
             'categories' => $this->relationLoaded('categories')
                 ? $this->categories
                 : null,
-            'created_at' => $this->created_at,
+            'created_at' => Carbon::parse($this->created_at)->toDateTimeString(),
+            'budget_id' => $this->budget_id,
         ];
     }
 }

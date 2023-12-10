@@ -31,7 +31,11 @@ class OperationController extends Controller
     {
         /** @var User $user */
         $user = auth()->user();
-        $query = Operation::query()->with('categories');
+        $query = Operation::query()->with('categories')->whereHas('budget', function ($query) use ($user) {
+            $query->whereHas('users', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            });
+        });
 
         $data = $request->validated();
         $filtersDTO = FiltrationService::makeDTO($data);
@@ -94,7 +98,9 @@ class OperationController extends Controller
     {
         $data = $request->validated();
 
-        $operation->update($data);
+        $operation->update([
+            'amount' => Money::of($data['amount'], $operation->budget->currency, roundingMode: RoundingMode::HALF_CEILING),
+        ] + $data);
 
         // Invalidate cache for this budget
         Cache::tags("budget:{$operation->budget->id}")->flush();

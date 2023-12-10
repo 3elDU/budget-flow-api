@@ -2,8 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Budget;
-use App\Models\User;
+use Brick\Math\Exception\NumberFormatException;
+use Brick\Math\Exception\RoundingNecessaryException;
+use Brick\Money\Exception\UnknownCurrencyException;
+use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -15,11 +17,14 @@ class OperationFactory extends Factory
      * Define the model's default state.
      *
      * @return array<string, mixed>
+     * @throws RoundingNecessaryException
+     * @throws NumberFormatException
+     * @throws UnknownCurrencyException
      */
     public function definition(): array
     {
         return [
-            'amount' => fake()->randomFloat(2, -150, 150),
+            'amount' => Money::of(rand(-150, 150), 'USD'),
             'name' => fake()->words(2, true),
             'description' => fake()->sentence(),
         ];

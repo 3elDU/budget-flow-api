@@ -7,4 +7,4 @@ artisan:
 	docker-compose exec app php artisan $(filter-out $@,$(MAKECMDGOALS))
 
 freshseed:
-	docker-compose exec app php artisan migrate:fresh --seed
+	cd src && php artisan migrate:fresh --seed
