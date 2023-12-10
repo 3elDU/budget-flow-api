@@ -6,7 +6,7 @@ use App\Rules\HexColor;
 use App\Rules\CurrencyCode;
 use Illuminate\Foundation\Http\FormRequest;
 
-class BudgetCreateRequest extends FormRequest
+class BudgetRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.

@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Rules\MoneyAmount;
 use Illuminate\Foundation\Http\FormRequest;
 
-class OperationUpdateRequest extends FormRequest
+class OperationRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,9 +15,11 @@ class OperationUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string', 'min:1', 'max:255'],
+            'name' => ['string', 'required', 'min:1', 'max:255'],
             'description' => ['string', 'nullable', 'min:1', 'max:4096'],
-            'amount' => [new MoneyAmount]
+            'amount' => ['required', 'numeric', new MoneyAmount],
+            'categories' => ['array', 'nullable'],
+            'created_at' => ['date', 'nullable'],
         ];
     }
 }

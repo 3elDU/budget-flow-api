@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Rules\HexColor;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryCreateRequest extends FormRequest
+class CategoryRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -16,7 +16,7 @@ class CategoryCreateRequest extends FormRequest
     {
         return [
             'name' => ['string', 'required', 'min:1', 'max:255'],
-            'description' => ['string', 'min:1', 'max:4096'],
+            'description' => ['nullable', 'string', 'min:1', 'max:4096'],
             'color_hex' => ['string', 'required', new HexColor]
         ];
     }

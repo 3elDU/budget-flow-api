@@ -13,7 +13,7 @@ use Illuminate\Routing\Controller;
 use App\Http\Resources\BudgetResource;
 use App\Structures\Enum\AnalyticsPeriod;
 use App\Http\Requests\BudgetAmountRequest;
-use App\Http\Requests\BudgetCreateRequest;
+use App\Http\Requests\BudgetRequest;
 use App\Http\Requests\BudgetUpdateRequest;
 use App\Http\Requests\BudgetAnalyticsRequest;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -145,7 +145,7 @@ class BudgetController extends Controller
      * Update a budget.
      * Returns updated budget object
      */
-    public function update(Budget $budget, BudgetUpdateRequest $request): BudgetResource
+    public function update(Budget $budget, BudgetRequest $request): BudgetResource
     {
         $data = $request->validated();
 
@@ -169,7 +169,7 @@ class BudgetController extends Controller
      * Create a new budget.
      * Returns the newly created budget object
      */
-    public function create(BudgetCreateRequest $request): BudgetResource
+    public function create(BudgetRequest $request): BudgetResource
     {
         $data = $request->validated();
 

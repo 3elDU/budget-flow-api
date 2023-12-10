@@ -13,7 +13,7 @@ use App\Services\FiltrationService;
 use App\Http\Requests\FiltersRequest;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\OperationResource;
-use App\Http\Requests\OperationCreateRequest;
+use App\Http\Requests\OperationRequest;
 use App\Http\Requests\OperationUpdateRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -74,7 +74,7 @@ class OperationController extends Controller
      * Create a new operation for a budget.
      * Returns newly created operation.
      */
-    public function create(Budget $budget, OperationCreateRequest $request): OperationResource
+    public function create(Budget $budget, OperationRequest $request): OperationResource
     {
         $data = $request->validated();
 
@@ -94,7 +94,7 @@ class OperationController extends Controller
     /**
      * Update a specific operation
      */
-    public function update(Operation $operation, OperationUpdateRequest $request): OperationResource
+    public function update(Operation $operation, OperationRequest $request): OperationResource
     {
         $data = $request->validated();
 

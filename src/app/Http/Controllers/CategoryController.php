@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use App\Http\Requests\CategoryCreateRequest;
+use App\Http\Requests\CategoryRequest;
 use App\Http\Requests\CategoryUpdateRequest;
 
 /**
@@ -27,7 +27,7 @@ class CategoryController extends Controller
      * Create a new category.
      * Returns created category object
      */
-    public function create(CategoryCreateRequest $request): JsonResponse
+    public function create(CategoryRequest $request): JsonResponse
     {
         $category = Category::create($request->validated());
 
@@ -48,7 +48,7 @@ class CategoryController extends Controller
      * Update a category.
      * Returns updated category object
      */
-    public function update(Category $category, CategoryUpdateRequest $request): JsonResponse
+    public function update(Category $category, CategoryRequest $request): JsonResponse
     {
         $category->update($request->validated());
 
