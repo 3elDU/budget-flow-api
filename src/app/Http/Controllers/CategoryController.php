@@ -7,7 +7,6 @@ use App\Http\Resources\OperationResource;
 use App\Models\Category;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CategoryRequest;
 
 /**
@@ -22,6 +21,7 @@ class CategoryController extends Controller
      *
      * @return AnonymousResourceCollection<CategoryResource>
      * @apiResourceCollection App\Http\Resources\CategoryResource
+     * @apiResourceModel App\Models\Category
      */
     public function categories(): AnonymousResourceCollection
     {
@@ -34,6 +34,7 @@ class CategoryController extends Controller
      * @param CategoryRequest $request
      * @return CategoryResource
      * @apiResource App\Http\Resources\CategoryResource
+     * @apiResourceModel App\Models\Category
      */
     public function create(CategoryRequest $request): CategoryResource
     {
@@ -48,6 +49,7 @@ class CategoryController extends Controller
      * @param Category $category
      * @return AnonymousResourceCollection<OperationResource>
      * @apiResourceCollection App\Http\Resources\CategoryResource
+     * @apiResourceModel App\Models\Category
      */
     public function operations(Category $category): AnonymousResourceCollection
     {
@@ -61,6 +63,7 @@ class CategoryController extends Controller
      * @param CategoryRequest $request
      * @return CategoryResource
      * @apiResource App\Http\Resources\CategoryResource
+     * @apiResourceModel App\Models\Category
      */
     public function update(Category $category, CategoryRequest $request): CategoryResource
     {

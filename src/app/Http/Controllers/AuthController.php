@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\LoginRequest;
-use App\Http\Resources\UserResource;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -33,16 +32,6 @@ class AuthController extends Controller
         return response()->json([
             'token' => $user->createToken(time())->plainTextToken,
         ]);
-    }
-
-    /**
-     * Return the currently logged in user resource.
-     * @return UserResource
-     * @apiResource App\Http\Resources\UserResource
-     */
-    public function me(): UserResource
-    {
-        return new UserResource(auth()->user());
     }
 
     /**

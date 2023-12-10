@@ -29,6 +29,7 @@ class BudgetController extends Controller
      *
      * @return ResourceCollection<BudgetResource>
      * @apiResource App\Http\Resources\BudgetResource
+     * @apiResourceModel App\Models\Budget
      */
     public function budgets(): ResourceCollection
     {
@@ -44,6 +45,7 @@ class BudgetController extends Controller
      * @param Budget $budget
      * @return BudgetResource
      * @apiResource App\Http\Resources\BudgetResource
+     * @apiResourceModel App\Models\Budget
      */
     public function budget(Budget $budget): BudgetResource
     {
@@ -189,6 +191,7 @@ class BudgetController extends Controller
      * @param BudgetRequest $request
      * @return BudgetResource
      * @apiResource App\Http\Resources\BudgetResource
+     * @apiResourceModel App\Models\Budget
      */
     public function update(Budget $budget, BudgetRequest $request): BudgetResource
     {
@@ -220,6 +223,7 @@ class BudgetController extends Controller
      * @param BudgetRequest $request
      * @return BudgetResource
      * @apiResource App\Http\Resources\BudgetResource
+     * @apiResourceModel App\Models\Budget
      */
     public function create(BudgetRequest $request): BudgetResource
     {

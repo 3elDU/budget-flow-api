@@ -49,7 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
     Route::group(['prefix' => 'users'], function () {
-        Route::get('me', [AuthController::class, 'me']);
+        Route::get('me', [UserController::class, 'me']);
 
         Route::put('me/settings', [UserController::class, 'updateSettings']);
     });

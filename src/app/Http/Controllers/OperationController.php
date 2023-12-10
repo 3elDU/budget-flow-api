@@ -36,6 +36,7 @@ class OperationController extends Controller
      * @return AnonymousResourceCollection<OperationResource>|JsonResponse
      * @throws Exception
      * @apiResourceCollection App\Http\Resources\OperationResource
+     * @apiResourceModel App\Models\Operation
      */
     public function index(FiltersRequest $request): AnonymousResourceCollection | JsonResponse
     {
@@ -78,6 +79,7 @@ class OperationController extends Controller
      * @param Operation $operation
      * @return OperationResource
      * @apiResource App\Http\Resources\OperationResource
+     * @apiResourceModel App\Models\Operation
      */
     public function get(Operation $operation): OperationResource
     {
@@ -94,6 +96,7 @@ class OperationController extends Controller
      * @throws RoundingNecessaryException
      * @throws UnknownCurrencyException
      * @apiResource App\Http\Resources\OperationResource
+     * @apiResourceModel App\Models\Operation
      */
     public function create(Budget $budget, OperationRequest $request): OperationResource
     {
@@ -122,6 +125,7 @@ class OperationController extends Controller
      * @throws RoundingNecessaryException
      * @throws UnknownCurrencyException
      * @apiResource App\Http\Resources\OperationResource
+     * @apiResourceModel App\Models\Operation
      */
     public function update(Operation $operation, OperationRequest $request): OperationResource
     {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\UserSettingsUpdateRequest;
 
@@ -12,6 +13,17 @@ use App\Http\Requests\UserSettingsUpdateRequest;
  */
 class UserController extends Controller
 {
+    /**
+     * Return the currently logged in user resource.
+     * @return UserResource
+     * @apiResource App\Http\Resources\UserResource
+     * @apiResourceModel App\Models\User
+     */
+    public static function me(): UserResource
+    {
+        return new UserResource(auth()->user());
+    }
+
     /**
      * Update user settings
      *
