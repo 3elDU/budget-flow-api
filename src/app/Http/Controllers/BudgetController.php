@@ -28,6 +28,7 @@ class BudgetController extends Controller
      * List all budgets associated with the user
      *
      * @return ResourceCollection<BudgetResource>
+     * @apiResource App\Http\Resources\BudgetResource
      */
     public function budgets(): ResourceCollection
     {
@@ -42,6 +43,7 @@ class BudgetController extends Controller
      *
      * @param Budget $budget
      * @return BudgetResource
+     * @apiResource App\Http\Resources\BudgetResource
      */
     public function budget(Budget $budget): BudgetResource
     {
@@ -186,6 +188,7 @@ class BudgetController extends Controller
      * @param Budget $budget
      * @param BudgetRequest $request
      * @return BudgetResource
+     * @apiResource App\Http\Resources\BudgetResource
      */
     public function update(Budget $budget, BudgetRequest $request): BudgetResource
     {
@@ -216,6 +219,7 @@ class BudgetController extends Controller
      * Returns the newly created budget object
      * @param BudgetRequest $request
      * @return BudgetResource
+     * @apiResource App\Http\Resources\BudgetResource
      */
     public function create(BudgetRequest $request): BudgetResource
     {

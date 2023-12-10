@@ -38,6 +38,7 @@ class AuthController extends Controller
     /**
      * Return the currently logged in user resource.
      * @return UserResource
+     * @apiResource App\Http\Resources\UserResource
      */
     public function me(): UserResource
     {

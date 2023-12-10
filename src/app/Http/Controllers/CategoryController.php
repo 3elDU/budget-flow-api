@@ -21,6 +21,7 @@ class CategoryController extends Controller
      * Return all categories.
      *
      * @return AnonymousResourceCollection<CategoryResource>
+     * @apiResourceCollection App\Http\Resources\CategoryResource
      */
     public function categories(): AnonymousResourceCollection
     {
@@ -32,6 +33,7 @@ class CategoryController extends Controller
      *
      * @param CategoryRequest $request
      * @return CategoryResource
+     * @apiResource App\Http\Resources\CategoryResource
      */
     public function create(CategoryRequest $request): CategoryResource
     {
@@ -45,6 +47,7 @@ class CategoryController extends Controller
      *
      * @param Category $category
      * @return AnonymousResourceCollection<OperationResource>
+     * @apiResourceCollection App\Http\Resources\CategoryResource
      */
     public function operations(Category $category): AnonymousResourceCollection
     {
@@ -57,6 +60,7 @@ class CategoryController extends Controller
      * @param Category $category
      * @param CategoryRequest $request
      * @return CategoryResource
+     * @apiResource App\Http\Resources\CategoryResource
      */
     public function update(Category $category, CategoryRequest $request): CategoryResource
     {
