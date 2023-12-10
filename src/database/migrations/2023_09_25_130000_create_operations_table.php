@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('budget_id')->references('id')->on('budgets');
             $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
+            $table->timestamp('made_at');
             $table->tinyText('name')->nullable();
             $table->string('description', 4096)->nullable();
             $table->softDeletes();

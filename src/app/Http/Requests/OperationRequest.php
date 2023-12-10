@@ -19,7 +19,7 @@ class OperationRequest extends FormRequest
             'description' => ['string', 'nullable', 'min:1', 'max:4096'],
             'amount' => ['required', 'numeric', new MoneyAmount],
             'categories' => ['array', 'nullable'],
-            'created_at' => ['date', 'nullable'],
+            'made_at' => ['date', 'nullable'],
         ];
     }
 }

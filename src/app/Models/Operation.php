@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string description
  * @property string created_at
  * @property string updated_at
+ * @property string made_at
  * @property string deleted_at
  * @property Collection<Category> categories
  * @property Budget budget
