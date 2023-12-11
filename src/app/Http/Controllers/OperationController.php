@@ -69,7 +69,7 @@ class OperationController extends Controller
 
         FiltrationService::performFiltration($query, $filtersDTO);
 
-        $query->orderBy('created_at', 'desc');
+        $query->orderBy('made_at', 'desc');
 
         return OperationResource::collection($query->paginate($data['per_page'] ?? 10));
     }
@@ -104,11 +104,11 @@ class OperationController extends Controller
         $data = $request->validated();
 
         $operation = Operation::create([
-            'budget_id' => $budget->id,
-            'user_id' => auth()->user()->id,
-            'amount' => Money::of($data['amount'], $budget->currency, roundingMode: RoundingMode::HALF_CEILING),
-            'made_at' => Carbon::parse($data['made_at']),
-        ] + $data);
+                'budget_id' => $budget->id,
+                'user_id' => auth()->user()->id,
+                'amount' => Money::of($data['amount'], $budget->currency, roundingMode: RoundingMode::HALF_CEILING),
+                'made_at' => Carbon::parse($data['made_at']),
+            ] + $data);
 
         $categories = Category::whereIn('id', $data['categories'])->get();
 
@@ -134,8 +134,13 @@ class OperationController extends Controller
         $data = $request->validated();
 
         $operation->update([
-            'amount' => Money::of($data['amount'], $operation->budget->currency, roundingMode: RoundingMode::HALF_CEILING),
-        ] + $data);
+                'amount' => Money::of(
+                    $data['amount'],
+                    $operation->budget->currency,
+                    roundingMode: RoundingMode::HALF_CEILING,
+                ),
+                'made_at' => Carbon::parse($data['made_at']),
+            ] + $data);
 
         // Invalidate cache for this budget
         Cache::tags("budget:{$operation->budget->id}")->flush();
