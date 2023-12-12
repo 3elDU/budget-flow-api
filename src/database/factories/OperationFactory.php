@@ -27,6 +27,7 @@ class OperationFactory extends Factory
             'amount' => Money::of(rand(-150, 150), 'USD'),
             'name' => fake()->words(2, true),
             'description' => fake()->sentence(),
+            'made_at' => fake()->dateTimeBetween('-1 year'),
         ];
     }
 }
