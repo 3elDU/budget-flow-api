@@ -26,8 +26,8 @@ class OperationResource extends JsonResource
             'categories' => $this->relationLoaded('categories')
                 ? $this->categories
                 : null,
-            'made_at' => Carbon::parse($this->made_at)->toDateTimeString(),
-            'created_at' => Carbon::parse($this->created_at)->toDateTimeString(),
+            'made_at' => $this->made_at,
+            'created_at' => $this->created_at,
             'budget_id' => $this->budget_id,
         ];
     }

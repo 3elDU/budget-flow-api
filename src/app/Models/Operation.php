@@ -33,6 +33,8 @@ class Operation extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = ['made_at' => 'datetime'];
+
     /**
      * Returns all categories attached to this operation
      */
