@@ -5,4 +5,5 @@ namespace App\Structures\Enum;
 enum FilterType
 {
     case Where;
+    case WhereIn;
 }

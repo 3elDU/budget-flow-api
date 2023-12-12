@@ -30,7 +30,7 @@ class FiltrationService
                 throw new Exception('type must not be null');
             }
             $dtos[] = match ($filter['type']) {
-                'where' => new FilterWhereDTO($filter['field'], $filter['operator'], $filter['value']),
+                'where', 'whereIn' => new FilterWhereDTO($filter['field'], $filter['operator'], $filter['value']),
                 default => throw new Exception('Unknown type'),
             };
         }
@@ -47,10 +47,44 @@ class FiltrationService
     public static function performFiltration(Builder $query, FiltersDTO $filters): void
     {
         foreach ($filters->filters as $filter) {
-            match ($filter->type) {
-                FilterType::Where => $query->where($filter->field, $filter->operator, $filter->value),
-                default => throw new Exception('Unknown type'),
-            };
+            $field = $filter->field;
+            $operator = $filter->operator;
+
+            if (in_array($operator, ['like', 'not like', 'ilike', 'not ilike'])) {
+                $value = "%$filter->value%";
+            } else {
+                $value = $filter->value;
+            }
+
+            if (str_contains($field, '.')) {
+                [$relation, $field] = explode('.', $field);
+
+                $query->whereHas($relation, fn (Builder $query) => self::applyQuery(
+                    $query,
+                    $filter->type,
+                    $field,
+                    $operator,
+                    $value,
+                ));
+            } else {
+                self::applyQuery($query, $filter->type, $field, $operator, $value);
+            }
         }
+    }
+
+    private static function applyQuery(
+        Builder $query,
+        FilterType $type,
+        string $field,
+        string $operator,
+        mixed $value,
+    ): Builder
+    {
+        match ($type) {
+            FilterType::Where => $query->where($field, $operator, $value),
+            FilterType::WhereIn => $query->whereIn($field, $operator, $value),
+        };
+
+        return $query;
     }
 }
